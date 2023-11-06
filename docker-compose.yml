@@ -24,5 +24,3 @@ services:
     command: 'npm start'
 volumes:
   group-project:
-
-  # ananya tandel commit test

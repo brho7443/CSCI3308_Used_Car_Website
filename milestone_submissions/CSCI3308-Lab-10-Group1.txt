@@ -1,0 +1,20 @@
+Lab 10: Kick start group project
+
+Team Number: 1 (Section 013)
+Team Name: The Wheel Wizards
+
+Team Members: Ananya Tandel, Michael Stich, Cobhan Kale, Brock Hoos, Michael Giesecke
+GitHub Usernames: ananyatandel, stichmc, CobhanK, brho7443, MiGi2726
+Email Addresses: anta1515@colorado.edu, mist2680@colorado.edu, coka2463@colorado.edu, brho7443@colorado.edu, migi2726@colorado.edu    
+
+Application Name: Wheel Wizard
+
+Application Description: Wheel Wizard gives the user an interactive marketplace to buy/sell cars and car accessories. There will be a login page to control which users use our application. This also allows the user to save cars to their profile along with saving their searches for cars. Along with the login page, there will be a logout page to log the user out as well as a registration page for new users to sign up. After logging in or registering, the user will be redirected to the home page that has 3 cards with the options of buying, selling, or accessories. Based on the user’s selection they will be redirected to the desired page.
+
+The buying page allows users to browse cars that are for sale. The user can filter these by color, make, model, etc. They can then see a picture of the car’s within their filter with the price of that car. The selling page allows users to post a car for sale. They enter in the required fields of make, model, color, and the price they want to sell it for. Then the application will move the post into the database of all selling cars and allow other users to see that car. Additionally, there will be a page on the website for car accessories which will be similar to the car buying page in format.
+
+
+Vision Statement: 
+"Wheel Wizard aims to be the ultimate online destination for buying, selling, and customizing cars, uniting a global community of enthusiasts while promoting sustainability and innovation in the automotive industry."
+
+GitHub Repo Link: https://github.com/stichmc/wheel-wizard
