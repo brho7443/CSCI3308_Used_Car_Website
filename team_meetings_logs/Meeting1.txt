@@ -1,0 +1,20 @@
+Summary:
+- For each meeting have a presentor that presents all work done for the week 
+and a scribe to summarize the meeting with each person's roles next week
+
+- Database Schema will need to add a accessory table with API's or dummy database
+
+- Focus more on favorite cars table and make search history a secondary functionality
+
+- Buyer/Seller role for users
+
+- Messaging table and functionality (think through as group)
+
+- Send email to Ashwarya with questions and review of database throughout week
+
+Roles:
+Michael S. - API desin and implementation
+Brock - UI design and functionality. Start implementation of UI for home page
+Michael G - Messaging UI design with API functionality 
+Cobhan - Login and signup page with password hashing and use of database storage
+Ananya - Accessories Page UI with API's for data or come up with dummy data
