@@ -7,13 +7,16 @@ Website where users can search for used cars and save their favorite cars to the
 Michael Stich, Michael Gisecke, Cobhan Kale, Ananya Tandel, Brock Hoos
 
 ### Technology Stack used for the project
-    <WIP> Postgres SQL, JS, Html
+    - Postgres SQL
+    - HTML & CSS
+    - Javascript
 
 ### Prerequisites to run the application - Any software that needs to be installed to run the application
-    <WIP>
+    - Docker Desktop
 
-### Instructions on how to run the application locally.
-    <WIP>
+### Instructions on how to run the application locally
+    - Navigate to the root directory
+    - Run "docker-compose up"
 
 ### How to run the tests 
     <Later lab>
