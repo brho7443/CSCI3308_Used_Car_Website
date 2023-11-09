@@ -1,0 +1,24 @@
+This is structure of code we need to include our partials
+
+!DOCTYPE html>
+<html>
+<head>
+<!-- Replace With title of your page-->
+    <title>*TITLE OF PAGE*</title>
+</head>
+<body>
+<%- include ('../partials/header') %> 
+<%- include ('../partials/menu') %>
+
+<main>
+  <div class="container">
+    <!-- THE REST OF YOUR HTML CODE GOES HERE -->
+
+
+
+  </div>
+</main>
+
+        <%- include ('../partials/footer') %>
+    <body>
+<html>
