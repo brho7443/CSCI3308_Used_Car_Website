@@ -1,0 +1,38 @@
+<!--
+    NavBar to go on top of each page. Has the pages Home, Buy, Sell, Accessories, 
+    Messages, and Profile like the wireframe.
+-->
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">
+        <img src="/src/resources/img/wheelwizardlogo.png" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+        Wheel Wizard
+      </a>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <!-- Calls '/' API to go to home page after login, or login page if not -->
+            <a class="nav-link" href='/'>Home</a>
+        </li>
+        <li class="nav-item">
+            <!-- Calls '/buy' API to go to Buy page if logged in, or login page if not-->
+            <a class="nav-link" href="/buy">Buy</a>
+          </li>
+        <li class="nav-item">
+            <!-- Calls '/sell' API to go to Sell page if logged in, or login page if not-->
+            <a class="nav-link" href="/sell">Sell</a>
+          </li>
+        </li class="nav-item">
+        <!-- Calls '/accessories' API to go to Accessories page if logged in, or login page if not-->
+            <a class="nav-link" href="/accessories">Accessories</a>
+          </li>
+        </li class="nav-item">
+        <!-- Calls '/messages' API to go to Messages page if logged in, or login page if not-->
+            <a class="nav-link" href="/messages">Messages</a>
+          </li>
+        </li class="nav-item">
+        <!-- Calls '/profile' API to go to Profile page if logged in, or login page if not-->
+            <a class="nav-link" href="/profile">Profile</a>
+          </li>
+      </ul>
+    </nav>
+  </header>
