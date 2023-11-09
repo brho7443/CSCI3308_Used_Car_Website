@@ -13,7 +13,7 @@ and a scribe to summarize the meeting with each person's roles next week
 - Send email to Ashwarya with questions and review of database throughout week
 
 Roles:
-Michael S. - API desin and implementation
+Michael S. - API design and implementation
 Brock - UI design and functionality. Start implementation of UI for home page
 Michael G - Messaging UI design with API functionality 
 Cobhan - Login and signup page with password hashing and use of database storage
