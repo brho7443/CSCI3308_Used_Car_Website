@@ -2,7 +2,7 @@ CREATE TABLE user_table (
     username VARCHAR(60) PRIMARY KEY,
     password CHAR(30) NOT NULL,
     is_buyer BOOL,
-    favorites_id INT,
+    favorites_id INT
 );
 
 CREATE TABLE favorites_table (
@@ -11,5 +11,3 @@ CREATE TABLE favorites_table (
     username VARCHAR(60),
     FOREIGN KEY (username) REFERENCES user_table(username)
 );
-
-FOREIGN KEY (favorites_id) REFERENCES favorite_table(favorites_id)

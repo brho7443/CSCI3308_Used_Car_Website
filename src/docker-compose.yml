@@ -1,5 +1,3 @@
-# Debug YML Code:
-
 version: '3.9'
 services:
   db:
@@ -22,7 +20,7 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - ./src:/home/node/app
+      - ./:/home/node/app
     command: 'npm run testandrun'
 # This defines our volume(s), which will persist throughout startups.
 # If you want to get rid of a hanging volume, e.g. to test your database init,
