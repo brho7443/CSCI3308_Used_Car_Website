@@ -68,15 +68,50 @@ const user = {
   favorites_id : undefined
 }
 
-app.get('/', (req, res) => {
-    res.redirect('/login');
-});
+// // Authentication middleware.
+// const auth = (req, res, next) => {
+//   if (!req.session.user) {
+//     return res.redirect("/login");
+//   }
+//   next();
+// };
 
-app.get("/login", (req, res) => {
-  res.render("pages/login");
+// app.use(auth);
+
+app.get('/', (req, res) => {
+  res.render("pages/home");
 });
 
 //app.post login
+app.post('/login', async (req, res) => {
+  const username = req.body.username;
+  const hash = await bcrypt
+  .hash(req.body.password, 10)
+  .catch(err => console.error(err.message).log("failed to encrypt pass"));
+
+  // const query = `SELECT * FROM users WHERE username = '${username}'`;
+  const query = `SELECT * FROM user_table WHERE username = $1`;
+
+  db.one(query, [username])
+    .then((data) =>{
+      if(data.password = hash){
+        user.username = username;
+        user.password = hash;
+        req.session.user = user;
+        req.session.save();
+
+        res.redirect("/");
+      }
+      else{
+        // send message to user
+        res.redirect("/login");
+      }
+    })
+    .catch(err =>{
+      console.log(err);
+      res.redirect("/register");
+    })
+});
 
 app.get('/register', (req, res) =>{
   res.render('pages/register');
@@ -99,7 +134,8 @@ app.post('/register', async (req, res) =>{
   } 
   catch (err) {
     console.error(err);
-    res.status(500).json({ status: 'ERROR, user not created.' });
+    // res.status(500).json({ status: 'ERROR, user not created.' });
+    //send a error msg saying user already created
     res.redirect('/register');
   }
 });
