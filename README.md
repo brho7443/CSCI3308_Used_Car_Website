@@ -15,7 +15,7 @@ Michael Stich, Michael Gisecke, Cobhan Kale, Ananya Tandel, Brock Hoos
     - Docker Desktop
 
 ### Instructions on how to run the application locally
-    - Navigate to the root directory
+    - Navigate to the "src" directory
     - Run "docker-compose up"
 
 ### How to run the tests 
