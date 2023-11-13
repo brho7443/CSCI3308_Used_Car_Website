@@ -7,8 +7,8 @@ const app = express();
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
-// const bcrypt = require('bcrypt'); //  To hash passwords
-// const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
+const bcrypt = require('bcrypt'); //  To hash passwords
+const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
 
 // *****************************************************
 // Connect to DB 
@@ -70,7 +70,7 @@ const user = {
 
 app.get('/', (req, res) => {
     res.redirect('/login');
-  });
+});
 
 app.get("/login", (req, res) => {
   res.render("pages/login");
@@ -83,6 +83,26 @@ app.get('/register', (req, res) =>{
 });
 
 //app.post register
+app.post('/register', async (req, res) =>{
+  try {
+    // Hash the password using bcrypt library
+    const username = req.body.username;
+    const hash = await bcrypt.hash(req.body.password, 10);
+
+    const sql = `INSERT INTO user_table(username, password) VALUES ($1, $2)`;
+    
+    const result = await db.query(sql, [username, hash]);
+
+    console.log(result);
+    // res.json({ status: 'Successfully created user!' });
+    res.redirect('/login');
+  } 
+  catch (err) {
+    console.error(err);
+    res.status(500).json({ status: 'ERROR, user not created.' });
+    res.redirect('/register');
+  }
+});
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
@@ -93,11 +113,13 @@ app.get("/logout", (req, res) => {
 //:  Functionality API Routes
 // *****************************************************
 
-//Add Other APis Under HERE //
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
 
 // *****************************************************
 //  Start Server for Dev
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');

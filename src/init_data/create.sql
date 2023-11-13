@@ -1,6 +1,6 @@
 CREATE TABLE user_table (
     username VARCHAR(60) PRIMARY KEY,
-    password CHAR(30) NOT NULL,
+    password CHAR(60) NOT NULL,
     is_buyer BOOL,
     favorites_id INT
 );
