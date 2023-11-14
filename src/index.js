@@ -197,12 +197,43 @@ app.get('/profile', (req, res) => {
   else {res.redirect('/login');}
 });
 
+app.get('/accessories', (req, res) => {
+  if(req.session.user) {
+    req.session.destroy();
+    res.render('pages/accessories');
+  }
+  else {res.redirect('/login');}
+});
+
 // *****************************************************
 //:  Functionality API Routes
 // *****************************************************
 
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
+});
+
+app.get('/discover', (req,res) => {
+  axios({
+    url: `https://app.ticketmaster.com/discovery/v2/events.json`,
+    method: 'GET',
+    dataType: 'json',
+    headers: {
+      'Accept-Encoding': 'application/json',
+    },
+    params: {
+      apikey: process.env.API_KEY,
+      size: 10 // you can choose the number of events you would like to return
+    },
+  })
+    .then(results => {
+      console.log(results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+    })
+    .catch(error => {
+      console.log(error);
+    });
+    
+  res.render('pages/discover');
 });
 
 // *****************************************************
