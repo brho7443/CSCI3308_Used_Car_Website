@@ -68,18 +68,15 @@ const user = {
   favorites_id : undefined
 }
 
-// // Authentication middleware.
-// const auth = (req, res, next) => {
-//   if (!req.session.user) {
-//     return res.redirect("/login");
-//   }
-//   next();
-// };
-
-// app.use(auth);
-
 app.get('/', (req, res) => {
-  res.render("pages/home");
+  if (req.session.user) {
+    res.render('pages/home');
+  }
+  else {res.redirect('/login');}
+});
+
+app.get('/login', (req, res) => {
+  res.render('pages/login');
 });
 
 //app.post login
@@ -87,29 +84,31 @@ app.post('/login', async (req, res) => {
   const username = req.body.username;
   const hash = await bcrypt
   .hash(req.body.password, 10)
-  .catch(err => console.error(err.message).log("failed to encrypt pass"));
+  .catch(err => console.error(err.message).log('failed to encrypt pass'));
 
   // const query = `SELECT * FROM users WHERE username = '${username}'`;
   const query = `SELECT * FROM user_table WHERE username = $1`;
 
   db.one(query, [username])
-    .then((data) =>{
-      if(data.password = hash){
+    .then(async (data) =>{
+      const match = await bcrypt.compare(req.body.password, data.password);
+
+      if (match === false) {
+        console.error("Incorrect username or password");
+        res.redirect(400, '/register');
+      }
+      else {
         user.username = username;
-        user.password = hash;
+        user.password = await bcrypt.hash(req.body.password, 10);
+
         req.session.user = user;
         req.session.save();
-
-        res.redirect("/");
-      }
-      else{
-        // send message to user
-        res.redirect("/login");
+        res.redirect('/');
       }
     })
     .catch(err =>{
       console.log(err);
-      res.redirect("/register");
+      res.redirect(400,'/register');
     })
 });
 
@@ -118,31 +117,84 @@ app.get('/register', (req, res) =>{
 });
 
 //app.post register
-app.post('/register', async (req, res) =>{
-  try {
-    // Hash the password using bcrypt library
-    const username = req.body.username;
+app.post('/register', async (req, res) => {
+  // console.log('Before DB Alteration:');
+  // let entries = await db.query('SELECT * FROM user_table');
+  // console.log(entries);
+  
+  const username = req.body.username;
+
+  if (typeof username === 'string' && typeof req.body.password === 'string') {
     const hash = await bcrypt.hash(req.body.password, 10);
 
     const sql = `INSERT INTO user_table(username, password) VALUES ($1, $2)`;
     
-    const result = await db.query(sql, [username, hash]);
+    const result = db.query(sql, [username, hash])
+    .then(() =>{
+      console.log(result);
+    })
+    .catch(err =>{
+      console.log(err);
+      res.redirect(400,'/register');
+      //Alert user that username is already registered
+    });
 
-    console.log(result);
-    // res.json({ status: 'Successfully created user!' });
+    // console.log('After DB Alteration:');
+    // let entries = await db.query('SELECT * FROM user_table');
+    // console.log(entries);
+
+    // res.json({ message: 'Successfully created user!' });
     res.redirect('/login');
-  } 
-  catch (err) {
-    console.error(err);
-    // res.status(500).json({ status: 'ERROR, user not created.' });
-    //send a error msg saying user already created
-    res.redirect('/register');
+  }
+  else {
+    // res.json({message: 'Invalid input, user not created.'});
+    res.redirect(400,'/register');
   }
 });
 
-app.get("/logout", (req, res) => {
-  req.session.destroy();
-  res.render("pages/logout");
+//app.post delete user
+app.post('/profile/delete', async (req, res) =>{
+  if (req.session.user) {
+    console.log('Before DB Alteration:');
+    let entries = await db.query('SELECT * FROM user_table');
+    console.log(entries);
+    
+    console.log(req.session.user);
+    if(req.session.user) {
+      let entries = await db.query('SELECT * FROM user_table');
+      console.log(entries);
+
+      const username = user.username;
+      
+      const sql = `DELETE FROM favorites_table WHERE username = $1`;
+      
+      const result = await db.query(sql, [username]);
+
+      console.log('After DB Alteration:');
+      entries = await db.query('SELECT * FROM user_table');
+      console.log(entries);
+
+      console.log(result);
+      res.redirect(200,'/logout');
+    }
+    else {res.redirect(500,'/profile');}
+  }
+  else {res.redirect('/login');}
+});
+
+app.get('/logout', (req, res) => {
+  if(req.session.user) {
+    req.session.destroy();
+    res.render('pages/logout');
+  }
+  else {res.redirect('/login');}
+});
+
+app.get('/profile', (req, res) => {
+  if(req.session.user) {
+    res.render('pages/profile');
+  }
+  else {res.redirect('/login');}
 });
 
 // *****************************************************
