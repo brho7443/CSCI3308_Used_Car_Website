@@ -116,6 +116,30 @@ app.get('/register', (req, res) =>{
   res.render('pages/register');
 });
 
+axios({
+  url: 'https://carapi.app',
+  method: 'GET',
+  dataType:'json',
+  params: {
+  // "apikey": req.session.user.api_key,
+  // "keyword": "Taylor Swift", 
+  // "size": 10,
+  }
+  })
+  .then(results => {
+  console.log(results.data); // display the results
+  res.render("pages/buy", {
+  results: results.data._embedded.events
+  });
+  })
+  .catch(error => {
+  // Handle errors
+  res.render("pages/home", {
+  results: [],
+  error: true,
+  });
+})
+
 //app.post register
 app.post('/register', async (req, res) => {
   // console.log('Before DB Alteration:');
