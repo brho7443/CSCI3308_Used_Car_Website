@@ -10,6 +10,6 @@ Summary:
 Roles this week:
 Michael S. and Cobhan (together) - working together to fix API errors and finalize database schema
 Ananya - accessories page complete w/ dummy data from database
-Michael G. - prioritize working on the buying (car listing page) and cap API over Chat page
+Michael G. - prioritize working on the buying (car listing page) and API over Chat page
 Brock - work on the redirecting from login page to homepage and homepage to other pages. Implement profile page as well
 
