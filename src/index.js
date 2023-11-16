@@ -197,6 +197,45 @@ app.get('/profile', (req, res) => {
   else {res.redirect('/login');}
 });
 
+app.get('/home', (req, res) => {
+  if(req.session.user) {
+    res.render('pages/home');
+  }
+  else {res.redirect('/login');}
+});
+
+app.get('/buy', (req, res) => {
+  if(req.session.user) {
+    res.render('pages/buy');
+  }
+  else {res.redirect('/login');}
+});
+
+app.get('/sell', (req, res) => {
+  if(req.session.user) {
+    res.render('pages/sell');
+  }
+  else {res.redirect('/login');}
+});
+
+app.get('/accessories', (req, res) => {
+  if(req.session.user) {
+    res.render('pages/accessories');
+  }
+  else {res.redirect('/login');}
+});
+
+app.get('/messages', (req, res) => {
+  if(req.session.user) {
+    res.render('pages/messages');
+  }
+  else {res.redirect('/login');}
+});
+
+
+
+
+
 // *****************************************************
 //:  Functionality API Routes
 // *****************************************************
