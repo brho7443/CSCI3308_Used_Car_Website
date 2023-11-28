@@ -1,101 +1,72 @@
 <%- include ('../partials/header') %>
 
-
 <main class="container mt-5">
    <h2 class="mb-4">Car Accessories</h2>
 
+   <div class="row">
+      <% accessories.forEach(accessory => { %>
+         <div class="col-md-4 mb-4">
+            <div class="card">
+               <img src="/" class="card-img-top" alt="<%= accessory.name %>">
+               <div class="card-body">
+                  <h5 class="card-title"><%= accessory.name %></h5>
+                  <p class="card-text"><%= accessory.description %></p>
+                  <p class="card-text">Price: $<%= accessory.price %></p>
+                  <a href="#" class="btn btn-primary">Add to Cart</a>
+               </div>
+            </div>
+         </div>
+      <% }) %>
+   </div>
 
    <div class="row">
+    <% accessories.forEach(accessory => { %>
        <div class="col-md-4 mb-4">
-           <div class="card">
-               <img src="/" class="card-img-top" alt="Accessory 1">
-               <div class="card-body">
-                   <h5 class="card-title">Accessory 1</h5>
-                   <p class="card-text">Description.</p>
-                   <p class="card-text">Price: $...</p>
-                   <a href="#" class="btn btn-primary">Add to Cart</a>
-               </div>
-           </div>
+          <div class="card">
+             <img src="/" class="card-img-top" alt="<%= accessory.name %>">
+             <div class="card-body">
+                <h5 class="card-title"><%= accessory.name %></h5>
+                <p class="card-text"><%= accessory.description %></p>
+                <p class="card-text">Price: $<%= accessory.price %></p>
+                <a href="#" class="btn btn-primary">Add to Cart</a>
+             </div>
+          </div>
        </div>
+    <% }) %>
+ </div>
 
-
-  
-       <div class="row">
-           <div class="col-md-4 mb-4">
-               <div class="card">
-                   <img src="/" class="card-img-top" alt="Accessory 1">
-                   <div class="card-body">
-                       <h5 class="card-title">Accessory 2</h5>
-                       <p class="card-text">Description.</p>
-                       <p class="card-text">Price: $...</p>
-                       <a href="#" class="btn btn-primary">Add to Cart</a>
-                   </div>
-               </div>
-           </div>
-
-
-
-
-      
-   <div class="row">
+ <div class="row">
+    <% accessories.forEach(accessory => { %>
        <div class="col-md-4 mb-4">
-           <div class="card">
-               <img src="/" class="card-img-top" alt="Accessory 1">
-               <div class="card-body">
-                   <h5 class="card-title">Accessory 3</h5>
-                   <p class="card-text">Description.</p>
-                   <p class="card-text">Price: $...</p>
-                   <a href="#" class="btn btn-primary">Add to Cart</a>
-               </div>
-           </div>
+          <div class="card">
+             <img src="/" class="card-img-top" alt="<%= accessory.name %>">
+             <div class="card-body">
+                <h5 class="card-title"><%= accessory.name %></h5>
+                <p class="card-text"><%= accessory.description %></p>
+                <p class="card-text">Price: $<%= accessory.price %></p>
+                <a href="#" class="btn btn-primary">Add to Cart</a>
+             </div>
+          </div>
        </div>
+    <% }) %>
+ </div>
 
 
-  
-       <div class="row">
-           <div class="col-md-4 mb-4">
-               <div class="card">
-                   <img src="/" class="card-img-top" alt="Accessory 1">
-                   <div class="card-body">
-                       <h5 class="card-title">Accessory 4</h5>
-                       <p class="card-text">Description.</p>
-                       <p class="card-text">Price: $...</p>
-                       <a href="#" class="btn btn-primary">Add to Cart</a>
-                   </div>
-               </div>
-           </div>
-
-
-
-
-
-
-   <div class="row">
+ <div class="row">
+    <% accessories.forEach(accessory => { %>
        <div class="col-md-4 mb-4">
-           <div class="card">
-               <img src="/" class="card-img-top" alt="Accessory 1">
-               <div class="card-body">
-                   <h5 class="card-title">Accessory 5</h5>
-                   <p class="card-text">Description.</p>
-                   <p class="card-text">Price: $...</p>
-                   <a href="#" class="btn btn-primary">Add to Cart</a>
-               </div>
-           </div>
+          <div class="card">
+             <img src="/" class="card-img-top" alt="<%= accessory.name %>">
+             <div class="card-body">
+                <h5 class="card-title"><%= accessory.name %></h5>
+                <p class="card-text"><%= accessory.description %></p>
+                <p class="card-text">Price: $<%= accessory.price %></p>
+                <a href="#" class="btn btn-primary">Add to Cart</a>
+             </div>
+          </div>
        </div>
+    <% }) %>
+ </div>
 
-
-
-
-
-
-   <div class="row">
-       <div class="col-md-4 mb-4">
-           <div class="card">
-               <img src="/" class="card-img-top" alt="Accessory 1">
-               <div class="card-body">
-                   <h5 class="card-title">Accessory 6</h5>
-                   <p class="card-text">Description.</p>
-                   <p class="card-text">Price: $...</p>
-                   <a href="#" class="btn btn-primary">Add to Cart</a>
-               </div>
-           </div>
+ 
+</main>
