@@ -1,8 +1,59 @@
-<%- include ('../partials/header') %>
-<%- include ('../partials/menu') %>
+<!DOCTYPE html>
+<html>
 
-<main>
-    <h1>Profile Page</h1>
-</main>
+<head>
+    <title>User Home</title>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
 
-<%- include ('../partials/footer') %>
+<body>
+    <%- include ('../partials/header') %>
+    <%- include ('../partials/menu') %>
+    <main>
+        <div class="container">
+            <h1>Welcome User: <center><%= username %></center></h1>
+            <h2>User Data</h2>
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Username</td>
+                    <td><%= username %></td>
+                </tr>
+                <tr>
+                    <td>Password</td>
+                    <td>
+                        <span id="passwordText"><%= '********' %></span>
+                        <span id="passwordHidden" class="hidden"><%= password %></span>
+                        <button onclick="togglePasswordVisibility()">Unlock</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </main>
+
+    <%- include ('../partials/footer') %>
+
+    <script>
+        function togglePasswordVisibility() {
+            var passwordText = document.getElementById('passwordText');
+            var passwordHidden = document.getElementById('passwordHidden');
+
+            if (passwordText.classList.contains('hidden')) {
+                passwordText.classList.remove('hidden');
+                passwordHidden.classList.add('hidden');
+            } else {
+                passwordText.classList.add('hidden');
+                passwordHidden.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+
+</html>
