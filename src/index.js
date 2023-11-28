@@ -228,6 +228,12 @@ app.get('/home', (req, res) => {
   else {res.redirect('/login');}
 });
 
+
+// *****************************************************
+//:  Functionality API Routes
+// *****************************************************
+
+//Buy and search
 app.get('/buy', (req, res) => {
   if(req.session.user) {
     res.render('pages/buy');
@@ -235,6 +241,8 @@ app.get('/buy', (req, res) => {
   else {res.redirect('/login');}
 });
 
+
+//Sell
 app.get('/sell', (req, res) => {
   if(req.session.user) {
     res.render('pages/sell');
@@ -242,6 +250,63 @@ app.get('/sell', (req, res) => {
   else {res.redirect('/login');}
 });
 
+app.get('/sell/new', (req, res) => {
+  if(req.session.user) {
+    res.render('pages/sell_new');
+  }
+  else {res.redirect('/login');}
+});
+
+app.post('/sell/new', (req, res) =>{
+  const make = req.body.make;
+  const model = req.body.model;
+  const color = req.body.color;
+  const price = req.body.price;
+  let miles = req.body.miles;
+  let mpg = req.body.mpg;
+  const username = user.username;
+
+  if(!make | !model | !price){
+    //Send message 
+    res.status(400);
+    return; 
+  }
+
+  if(!miles){
+    miles = '-1';
+  }
+
+  if(!mpg){
+    mpg = '-1';
+  }
+
+  const sql = `INSERT INTO car_table(make, model, color, price, miles, mpg, username) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
+
+  const result = db.query(sql, [make, model, color, price, miles, mpg, username])
+  .then(() =>{
+    console.log(result);
+    res.json({
+      status: 'success', 
+      make: make, 
+      model: model
+    });
+  })
+  .catch(err =>{
+    console.log(err);
+    console.log(result);
+    res.redirect(400,'/sell/view');
+    //Alert user that username is already registered
+  });
+});
+
+app.get('/sell/view', (req, res) => {
+  if(req.session.user) {
+    res.render('pages/sell_view');
+  }
+  else {res.redirect('/login');}
+});
+
+//Accessories
 app.get('/accessories', (req, res) => {
   if(req.session.user) {
     res.render('pages/accessories');
@@ -249,6 +314,7 @@ app.get('/accessories', (req, res) => {
   else {res.redirect('/login');}
 });
 
+//Messaging
 app.get('/messages', (req, res) => {
   if(req.session.user) {
     res.render('pages/messages');
@@ -256,10 +322,8 @@ app.get('/messages', (req, res) => {
   else {res.redirect('/login');}
 });
 
-// *****************************************************
-//:  Functionality API Routes
-// *****************************************************
 
+//Legacy
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });

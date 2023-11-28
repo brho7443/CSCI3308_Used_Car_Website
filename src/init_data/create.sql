@@ -11,3 +11,14 @@ CREATE TABLE favorites_table (
     username VARCHAR(60),
     FOREIGN KEY (username) REFERENCES user_table(username)
 );
+
+CREATE TABLE car_table (
+    make VARCHAR(32) NOT NULL,
+    model VARCHAR(32) NOT NULL,
+    color VARCHAR(32),
+    price FLOAT NOT NULL,
+    miles FLOAT,
+    mpg FLOAT,
+    username VARCHAR(60),
+    FOREIGN KEY (username) REFERENCES user_table(username)
+);
