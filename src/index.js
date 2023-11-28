@@ -263,6 +263,29 @@ app.get('/discover', (req,res) => {
   res.render('pages/discover');
 });
 
+
+
+// *****************************************************
+//: Accessories Page Display
+// *****************************************************
+const accessories = [
+  { name: 'Steering Wheel Cover', description: 'Description 1', price: 20 },
+  { name: 'Leather Seat Covers', description: 'Description 2', price: 50 },
+  { name: 'Air Freshener', description: 'Description 2', price: 10 },
+  // add more accessories !!!!
+ 
+];
+
+// Route to render the accessories page
+app.get('/accessories', (req, res) => {
+  res.render('accessories', { accessories });
+});
+
+app.listen(port, () => {
+  console.log(`Server is listening on port 3000`);
+});
+
+
 // *****************************************************
 //  Start Server for Dev
 // *****************************************************
