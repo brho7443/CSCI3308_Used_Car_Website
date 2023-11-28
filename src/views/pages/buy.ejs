@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<%- include ('../partials/header') %> 
+<%- include ('../partials/menu') %>
+
+<main>
+    <h1>Car Listings Page</h1>
+    
+    <div class="car-list">
+      <% cars.forEach(car => { %>
+        <div class="car-item">
+          <h2><%= car.make %> <%= car.model %></h2>
+          <p>Color: <%= car.color %></p>
+          <p>Price: $<%= car.price.toFixed(2) %></p>
+          <p>Miles: <%= car.miles %></p>
+          <p>MPG: <%= car.mpg %></p>
+  
+          <% if (car.username) { %>
+            <p>Seller: <%= car.username %></p>
+          <% } %>
+  
+          <form action="/add-to-favorites" method="POST">
+            <input type="hidden" name="car_id" value="<%= car.car_id %>">
+            <button type="submit">Add to Favorites</button>
+          </form>
+        </div>
+      <% }) %>
+    </div>
+</main>  
+
+<%- include ('../partials/footer') %>

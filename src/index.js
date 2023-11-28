@@ -116,6 +116,30 @@ app.get('/register', (req, res) =>{
   res.render('pages/register');
 });
 
+// axios({
+//   url: 'https://carapi.app',
+//   method: 'GET',
+//   dataType:'json',
+//   params: {
+//   // "apikey": req.session.user.api_key,
+//   // "keyword": "Taylor Swift", 
+//   // "size": 10,
+//   }
+//   })
+//   .then(results => {
+//   console.log(results.data); // display the results
+//   res.render("pages/buy", {
+//   results: results.data._embedded.events
+//   });
+//   })
+//   .catch(error => {
+//   // Handle errors
+//   res.render("pages/home", {
+//   results: [],
+//   error: true,
+//   });
+// })
+
 //app.post register
 app.post('/register', async (req, res) => {
   // console.log('Before DB Alteration:');
@@ -204,19 +228,48 @@ app.get('/home', (req, res) => {
   else {res.redirect('/login');}
 });
 
-
 // *****************************************************
 //:  Functionality API Routes
 // *****************************************************
 
 //Buy and search
-app.get('/buy', (req, res) => {
+app.get('/buy', async (req, res) => {
   if(req.session.user) {
-    res.render('pages/buy');
+    try {
+      const cars = await db.query('SELECT * FROM car_table');
+      res.render('pages/buy', { cars });
+    } catch (error) {
+      console.error('Error fetching cars from the database:', error);
+      res.status(500).send('Internal Server Error');
+    }
   }
   else {res.redirect('/login');}
 });
 
+//Add car to favorites
+app.post('/add-to-favorites', async (req, res) =>{
+  if (req.session.user) {
+    console.log('Before DB Alteration:');
+    let entries = await db.query('SELECT * FROM favorites_table');
+    console.log(entries);
+    
+    if(req.session.user) {
+      const car_id = req.body.car_id;
+      const username = user.username;
+      
+      const sql = `INSERT INTO favorites_table (car_id, username) VALUES ($1, $2)`;
+      await db.query(sql, [car_id, username])
+
+      console.log('After DB Alteration:');
+      entries = await db.query('SELECT * FROM favorites_table');
+      console.log(entries);
+
+      res.redirect('/buy');
+    }
+    else {res.redirect(500,'/profile');}
+  }
+  else {res.redirect('/login');}
+});
 
 //Sell
 app.get('/sell', (req, res) => {
@@ -304,28 +357,28 @@ app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
 
-app.get('/discover', (req,res) => {
-  axios({
-    url: `https://app.ticketmaster.com/discovery/v2/events.json`,
-    method: 'GET',
-    dataType: 'json',
-    headers: {
-      'Accept-Encoding': 'application/json',
-    },
-    params: {
-      apikey: process.env.API_KEY,
-      size: 10 // you can choose the number of events you would like to return
-    },
-  })
-    .then(results => {
-      console.log(results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
-    })
-    .catch(error => {
-      console.log(error);
-    });
+// app.get('/discover', (req,res) => {
+//   axios({
+//     url: `https://app.ticketmaster.com/discovery/v2/events.json`,
+//     method: 'GET',
+//     dataType: 'json',
+//     headers: {
+//       'Accept-Encoding': 'application/json',
+//     },
+//     params: {
+//       apikey: process.env.API_KEY,
+//       size: 10 // you can choose the number of events you would like to return
+//     },
+//   })
+//     .then(results => {
+//       console.log(results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+//     })
+//     .catch(error => {
+//       console.log(error);
+//     });
     
-  res.render('pages/discover');
-});
+//   res.render('pages/discover');
+// });
 
 // *****************************************************
 //  Start Server for Dev
