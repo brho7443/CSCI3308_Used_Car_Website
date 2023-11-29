@@ -216,7 +216,8 @@ app.get('/logout', (req, res) => {
 
 app.get('/profile', (req, res) => {
   if(req.session.user) {
-    res.render('pages/profile');
+    const username = user.username;
+    res.render('pages/profile', {username});
   }
   else {res.redirect('/login');}
 });
