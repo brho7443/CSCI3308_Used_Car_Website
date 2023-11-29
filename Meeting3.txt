@@ -1,0 +1,18 @@
+Summary:
+- Home Screen is done but still needs images using Cloundinary API
+- Sell page - view listing functionality still needs work
+    - Adds listing to database successfully by pressing submit button
+- Still trying to get API to work and customizing it for our needs
+- Dynamically adding data from tables
+- Add to favorite button functionality 
+- Possible need for cars to users table
+
+Roles:
+- Book presentation slot
+- Add to listing functionality needs to be updated
+- Discuss whether we want to use both "add to cart" and "add to favorites" or only one of them
+- Michael S: Get API to work + possible add to cart functionality + add styling to buy page
+- Michael G: Fix main branch! -> do not merge to main if code is giving errors
+- Ananya: Add styling to accessories page + change "add to cart" to "add to favorites" if needed
+- Brock: Profile page functionality + get Cloudinary API to work for images
+- Cobhan: Get view listings to work + add styling to sell page
