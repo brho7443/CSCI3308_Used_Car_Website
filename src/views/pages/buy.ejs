@@ -12,15 +12,15 @@
           <p>Color: <%= car.color %></p>
           <p>Price: $<%= car.price.toFixed(2) %></p>
           <p>Miles: <%= car.miles %></p>
-          <p>MPG: <%= car.mpg %></p>
+          <p>Description: <%= car.car_description %></p>
   
           <% if (car.username) { %>
             <p>Seller: <%= car.username %></p>
           <% } %>
   
-          <form action="/add-to-favorites" method="POST">
+          <form action="/add-to-cart" method="POST">
             <input type="hidden" name="car_id" value="<%= car.car_id %>">
-            <button type="submit">Add to Favorites</button>
+            <button type="submit">Add to Cart</button>
           </form>
         </div>
       <% }) %>

@@ -1,7 +1,7 @@
 # wheel wizard
 
 ## Brief Application description
-Website where users can search for used cars and save their favorite cars to their account
+Website where users can search for used cars and save their favorite cars to their cart
 
 ## Contributors - In this case, it will be the team Members
 Michael Stich, Michael Gisecke, Cobhan Kale, Ananya Tandel, Brock Hoos

@@ -65,7 +65,7 @@ const user = {
   username : undefined,
   password : undefined,
   is_buyer : undefined,
-  favorites_id : undefined
+  cart_id : undefined
 }
 
 app.get('/', (req, res) => {
@@ -117,7 +117,7 @@ app.get('/register', (req, res) =>{
 });
 
 axios({
-  url: 'https://carapi.app/api/exterior-colors?limit=10&verbose=yes&year=2016',
+  url: 'https://carapi.app/api/exterior-colors?limit=100&verbose=yes&year=2016',
   method: 'GET'
 })
   .then(async response => {
@@ -140,9 +140,9 @@ axios({
       });
     });
 
-    console.log('After DB Alteration:');
-    let entries = await db.query('SELECT * FROM car_table');
-    console.log(entries);
+    // console.log('After DB Alteration:');
+    // let entries = await db.query('SELECT * FROM car_table');
+    // console.log(entries);
   })
   .catch(error => {
       console.error('Error:', error);
@@ -199,7 +199,7 @@ app.post('/profile/delete', async (req, res) =>{
 
       const username = user.username;
       
-      const sql = `DELETE FROM favorites_table WHERE username = $1`;
+      const sql = `DELETE FROM cart_table WHERE username = $1`;
       
       const result = await db.query(sql, [username]);
 
@@ -246,7 +246,7 @@ app.get('/home', (req, res) => {
 app.get('/buy', async (req, res) => {
   if(req.session.user) {
     try {
-      const cars = await db.query('SELECT * FROM car_table');
+      const cars = await db.query('SELECT * FROM car_table ORDER BY RANDOM()');
       res.render('pages/buy', { cars });
     } catch (error) {
       console.error('Error fetching cars from the database:', error);
@@ -256,22 +256,22 @@ app.get('/buy', async (req, res) => {
   else {res.redirect('/login');}
 });
 
-//Add car to favorites
-app.post('/add-to-favorites', async (req, res) =>{
+//Add car to cart
+app.post('/add-to-cart', async (req, res) =>{
   if (req.session.user) {
     console.log('Before DB Alteration:');
-    let entries = await db.query('SELECT * FROM favorites_table');
+    let entries = await db.query('SELECT * FROM cart_table');
     console.log(entries);
     
     if(req.session.user) {
       const car_id = req.body.car_id;
       const username = user.username;
       
-      const sql = `INSERT INTO favorites_table (car_id, username) VALUES ($1, $2)`;
+      const sql = `INSERT INTO cart_table (car_id, username) VALUES ($1, $2)`;
       await db.query(sql, [car_id, username])
 
       console.log('After DB Alteration:');
-      entries = await db.query('SELECT * FROM favorites_table');
+      entries = await db.query('SELECT * FROM cart_table');
       console.log(entries);
 
       res.redirect('/buy');
@@ -297,45 +297,43 @@ app.get('/sell/new', (req, res) => {
 });
 
 app.post('/sell/new', (req, res) =>{
-  const make = req.body.make;
-  const model = req.body.model;
-  const color = req.body.color;
-  const price = req.body.price;
-  let miles = req.body.miles;
-  let mpg = req.body.mpg;
-  const username = user.username;
+  if(req.session.user) {
+    const make = req.body.make;
+    const model = req.body.model;
+    const color = req.body.color;
+    const price = req.body.price;
+    const miles = req.body.miles;
+    const car_description = req.body.car_description;
+    const username = user.username;
 
-  if(!make | !model | !price){
-    //Send message 
-    res.status(400);
-    return; 
-  }
+    // if(!make | !model | !price){
+    //   //Send message 
+    //   res.status(400);
+    //   return; 
+    // }
 
-  if(!miles){
-    miles = '-1';
-  }
+    if(!miles){
+      miles = '-1';
+    }
 
-  if(!mpg){
-    mpg = '-1';
-  }
+    const sql = `INSERT INTO car_table(make, model, color, price, miles, car_description, username) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
 
-  const sql = `INSERT INTO car_table(make, model, color, price, miles, mpg, username) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
-
-  const result = db.query(sql, [make, model, color, price, miles, mpg, username])
-  .then(() =>{
-    console.log(result);
-    res.json({
-      status: 'success', 
-      make: make, 
-      model: model
+    const result = db.query(sql, [make, model, color, price, miles, car_description, username])
+    .then(() =>{
+      console.log(result);
+      res.json({
+        status: 'success', 
+        make: make, 
+        model: model
+      });
+    })
+    .catch(err =>{
+      console.log(err);
+      console.log(result);
+      res.redirect(400,'/sell/view');
     });
-  })
-  .catch(err =>{
-    console.log(err);
-    console.log(result);
-    res.redirect(400,'/sell/view');
-    //Alert user that username is already registered
-  });
+  }
+  else {res.redirect('/login');}
 });
 
 app.get('/sell/view', (req, res) => {
