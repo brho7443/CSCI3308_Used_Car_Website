@@ -116,29 +116,38 @@ app.get('/register', (req, res) =>{
   res.render('pages/register');
 });
 
-// axios({
-//   url: 'https://carapi.app',
-//   method: 'GET',
-//   dataType:'json',
-//   params: {
-//   // "apikey": req.session.user.api_key,
-//   // "keyword": "Taylor Swift", 
-//   // "size": 10,
-//   }
-//   })
-//   .then(results => {
-//   console.log(results.data); // display the results
-//   res.render("pages/buy", {
-//   results: results.data._embedded.events
-//   });
-//   })
-//   .catch(error => {
-//   // Handle errors
-//   res.render("pages/home", {
-//   results: [],
-//   error: true,
-//   });
-// })
+axios({
+  url: 'https://carapi.app/api/exterior-colors?limit=10&verbose=yes&year=2016',
+  method: 'GET'
+})
+  .then(async response => {
+    const insertCarQuery = `INSERT INTO car_table (make, model, color, price, miles, car_description) VALUES ($1, $2, $3, $4, $5, $6);`;
+
+    // Iterate over the properties of the object the API gives us
+    Object.keys(response.data.data).forEach(carId => {
+      const car = response.data.data[carId];
+      const make = car.make_model_trim.make_model.make.name;
+      const model = car.make_model_trim.make_model.name;
+      const price = car.make_model_trim.invoice;
+      const color = car.name;
+      const car_description = car.make_model_trim.description;
+      const miles = car.make_model_trim.id;
+  
+      db.query(insertCarQuery, [make, model, color, price, miles, car_description])
+      .catch(err =>{
+        console.log(err);
+        res.redirect(400,'/register');
+      });
+    });
+
+    console.log('After DB Alteration:');
+    let entries = await db.query('SELECT * FROM car_table');
+    console.log(entries);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+
 
 //app.post register
 app.post('/register', async (req, res) => {

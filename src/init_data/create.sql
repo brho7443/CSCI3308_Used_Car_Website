@@ -5,12 +5,12 @@ CREATE TABLE user_table (
 
 CREATE TABLE car_table (
     car_id SERIAL PRIMARY KEY,
-    make VARCHAR(32) NOT NULL,
-    model VARCHAR(32) NOT NULL,
-    color VARCHAR(32),
+    make VARCHAR(60) NOT NULL,
+    model VARCHAR(60) NOT NULL,
+    color VARCHAR(60) NOT NULL,
     price FLOAT NOT NULL,
-    miles FLOAT,
-    mpg FLOAT,
+    miles FLOAT NOT NULL,
+    car_description VARCHAR(60) NOT NULL,
 
     -- Optional Seller Info (If Listed By User)
     username VARCHAR(60),
