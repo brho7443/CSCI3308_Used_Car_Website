@@ -192,14 +192,10 @@ app.post('/profile/delete', async (req, res) =>{
     let entries = await db.query('SELECT * FROM user_table');
     console.log(entries);
     
-    console.log(req.session.user);
     if(req.session.user) {
-      let entries = await db.query('SELECT * FROM user_table');
-      console.log(entries);
-
       const username = user.username;
       
-      const sql = `DELETE FROM cart_table WHERE username = $1`;
+      let sql = `DELETE FROM user_table WHERE username = $1`;
       
       const result = await db.query(sql, [username]);
 
@@ -207,7 +203,6 @@ app.post('/profile/delete', async (req, res) =>{
       entries = await db.query('SELECT * FROM user_table');
       console.log(entries);
 
-      console.log(result);
       res.redirect(200,'/logout');
     }
     else {res.redirect(500,'/profile');}
