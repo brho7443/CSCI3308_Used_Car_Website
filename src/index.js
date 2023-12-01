@@ -364,7 +364,7 @@ app.post('/sell/new', (req, res) =>{
     });
     res.redirect('/sell');
   }
-  else {res.redirect('/login?invalid=1');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 app.get('/sell/remove-listing', (req, res) => {
