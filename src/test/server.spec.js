@@ -34,7 +34,7 @@ describe('Server!', () => {
       .post('/register')
       .send({username: 'user', password: '1234'})
       .end((err, res) => {
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(201);
         // expect(res.body.message).to.equals('Successfully created user!');
         done();
       });
@@ -86,7 +86,7 @@ describe('Server!', () => {
         .post('/login')
         .send({username: 'user1', password: '1234'})
         .end((err, res) => {
-          expect(res).to.have.status(400);
+          expect(res).to.have.status(401);
           // expect(res.body.message).to.equals('Successfully deleted user!');
           done();
         });
@@ -99,7 +99,7 @@ describe('Server!', () => {
         .post('/login')
         .send({username: 'user', password: 'wrong_password'})
         .end((err, res) => {
-          expect(res).to.have.status(400);
+          expect(res).to.have.status(401);
           // expect(res.body.message).to.equals('Successfully deleted user!');
           done();
         });
