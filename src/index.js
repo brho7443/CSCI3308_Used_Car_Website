@@ -71,17 +71,19 @@ const user = {
 // -------- HOME --------
 
 app.get('/', (req, res) => {
-  if (req.session.user) {
-    res.render('pages/home');
-  }
-  else {res.redirect('/login/failed');}
+  res.redirect('/home');
 });
 
 app.get('/home', (req, res) => {
   if(req.session.user) {
     res.render('pages/home');
   }
-  else {res.redirect('/login/failed');}
+  else{
+    res.render('pages/home',{
+      error: false,
+      message: `You must be signed in to view listings`,
+    });
+  }
 });
 
 // -------- LOGIN --------
@@ -89,19 +91,19 @@ app.get('/login', (req, res) => {
   res.render('pages/login');
 });
 
-app.get('/login/invalid_request', (req, res) => {
-  res.render('pages/login',{
-    error: true,
-    message: `You must be signed in to view listings`,
-  });
-});
+// app.get('/login/invalid_request', (req, res) => {
+//   res.render('pages/login',{
+//     error: true,
+//     message: `You must be signed in to view listings`,
+//   });
+// });
 
-app.get('/login/failed', (req, res) => {
-  res.render('pages/login',{
-    error: true,
-    message: `Incorrect username or password`,
-  });
-});
+// app.get('/login/failed', (req, res) => {
+//   res.render('pages/login',{
+//     error: true,
+//     message: `Incorrect username or password`,
+//   });
+// });
 
 app.post('/login', async (req, res) => {
   const username = req.body.username;
@@ -117,7 +119,10 @@ app.post('/login', async (req, res) => {
 
       if (match === false) {
         console.error("Incorrect username or password");
-        res.redirect(400, '/login/failed');
+        res.status(401).render('pages/login',{
+          error: true,
+          message: `Incorrect username or password`,
+        });
       }
       else {
         user.username = username;
@@ -130,8 +135,27 @@ app.post('/login', async (req, res) => {
     })
     .catch(err =>{
       console.error(err);
-      res.redirect(400, '/login/failed');
+      res.status(401).render('pages/login',{
+        error: true,
+        message: `Incorrect username or password`,
+      });
     })
+});
+
+app.get('/logout', (req, res) => {
+  if(req.session.user) {
+    req.session.destroy();
+    res.render('pages/logout',{
+      error: false,
+      message: `Logged out successfully`,
+    });
+  }
+  else {
+    res.render('pages/logout',{
+      error: true,
+      message: `Not logged in. Failed to logout`,
+    });
+  }
 });
 
 // -------- REGISTER --------
@@ -156,10 +180,18 @@ app.post('/register', async (req, res) => {
     const result = db.query(sql, [username, hash])
     .then(() =>{
       console.log(result);
+      res.status(201).render('pages/register',{
+        error: false,
+        message: `Successfully registered user!`,
+      })
     })
     .catch(err =>{
       console.log(err);
-      res.redirect(400,'/register');
+      // res.redirect(400,'/register/failed');
+      res.status(400).render('pages/register',{
+        error: true,
+        message: `Username taken. Failed to register`,
+      })
       //Alert user that username is already registered
     });
 
@@ -168,11 +200,14 @@ app.post('/register', async (req, res) => {
     // console.log(entries);
 
     // res.json({ message: 'Successfully created user!' });
-    res.redirect('/login');
+    // res.redirect('/login');
   }
   else {
     // res.json({message: 'Invalid input, user not created.'});
-    res.redirect(400,'/register');
+    res.status(400).render('pages/register',{
+      error: true,
+      message: `User input must be string`,
+    })
   }
 });
 
@@ -184,7 +219,12 @@ app.get('/profile', (req, res) => {
     const username = user.username;
     res.render('pages/profile', {username});
   }
-  else {res.redirect('/login/invalid_request');}
+  else{
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
+  }
 });
 
 
@@ -209,16 +249,14 @@ app.post('/profile/delete', async (req, res) =>{
     }
     else {res.redirect(500,'/profile');}
   }
-  else {res.redirect('/login/invalid_request');}
+  else{
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
+  }
 });
 
-app.get('/logout', (req, res) => {
-  if(req.session.user) {
-    req.session.destroy();
-    res.render('pages/logout');
-  }
-  else {res.redirect('/login/invalid_request');}
-});
 
 app.post('/profile/changePassword', async (req, res) => {
   if(req.session.user) {
@@ -235,7 +273,12 @@ app.post('/profile/changePassword', async (req, res) => {
 
     res.render('pages/profile', {username});
   }
-  else {res.redirect('/login/invalid_request');}
+  else{
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
+  }
 });
 
 // *****************************************************
@@ -253,7 +296,12 @@ app.get('/buy', async (req, res) => {
       res.status(500).send('Internal Server Error');
     }
   }
-  else {res.redirect('/login/invalid_request');}
+  else{
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
+  }
 });
 
 axios({
@@ -311,7 +359,12 @@ app.post('/add-to-cart', async (req, res) =>{
     }
     else {res.redirect(500,'/profile');}
   }
-  else {res.redirect('/login/invalid_request');}
+  else{
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
+  }
 });
 
 // -------- SELLING --------
@@ -334,7 +387,10 @@ app.get('/sell', async (req, res) => {
 
   }
   else{
-    res.redirect('/login/failed');
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
   }
 });
 
@@ -342,7 +398,12 @@ app.get('/sell/new', (req, res) => {
   if(req.session.user) {
     res.render('pages/sell_new');
   }
-  else {res.redirect('/login/invalid_request');}
+  else{
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
+  }
 });
 
 app.post('/sell/new', (req, res) =>{
@@ -362,16 +423,29 @@ app.post('/sell/new', (req, res) =>{
       console.log(err);
       console.log(result);
     });
-    res.redirect('/sell');
+    res.render('pages/sell_new',{
+      error: false,
+      message: `Successfully listed car`,
+    })
   }
-  else {res.redirect('/login/invalid_request');}
+  else{
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
+  }
 });
 
 app.get('/sell/remove-listing', (req, res) => {
   if(req.session.user) {
     res.redirect('/sell');
   }
-  else {res.redirect('/login/invalid_request');}
+  else{
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
+  }
 });
 
 app.post('/sell/remove-listing', (req, res) =>{
@@ -398,37 +472,18 @@ app.get('/accessories', (req, res) => {
   if(req.session.user) {
     res.render('pages/accessories');
   }
-  else {res.redirect('/login/invalid_request');}
+  else{
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
+  }
 });
-
 
 // -------- TESTING --------
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
-
-// app.get('/discover', (req,res) => {
-//   axios({
-//     url: `https://app.ticketmaster.com/discovery/v2/events.json`,
-//     method: 'GET',
-//     dataType: 'json',
-//     headers: {
-//       'Accept-Encoding': 'application/json',
-//     },
-//     params: {
-//       apikey: process.env.API_KEY,
-//       size: 10 // you can choose the number of events you would like to return
-//     },
-//   })
-//     .then(results => {
-//       console.log(results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
-//     })
-//     .catch(error => {
-//       console.log(error);
-//     });
-    
-//   res.render('pages/discover');
-// });
 
 // *****************************************************
 //  Start Server for Dev
