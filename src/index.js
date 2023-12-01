@@ -231,6 +231,24 @@ app.get('/profile', (req, res) => {
   else {res.redirect('/login');}
 });
 
+app.post('/profile/changePassword', async (req, res) => {
+  if(req.session.user) {
+    const username = user.username;
+    let hash = await bcrypt.hash(req.body.password, 10);
+
+    const sql = `UPDATE user_table SET password = $1 WHERE username = $2`;
+
+    let result = db.query(sql, [hash, username])
+    .catch(err =>{
+      console.log(err);
+      res.redirect(400,'/register');
+    })
+
+    res.render('pages/profile', {username});
+  }
+  else {res.redirect('/login');}
+});
+
 app.get('/home', (req, res) => {
   if(req.session.user) {
     res.render('pages/home');
@@ -368,13 +386,6 @@ app.get('/accessories', (req, res) => {
   else {res.redirect('/login');}
 });
 
-//Messaging
-app.get('/messages', (req, res) => {
-  if(req.session.user) {
-    res.render('pages/messages');
-  }
-  else {res.redirect('/login');}
-});
 
 
 // -------- TESTING --------
