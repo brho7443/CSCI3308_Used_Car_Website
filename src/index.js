@@ -68,25 +68,47 @@ const user = {
   cart_id : undefined
 }
 
+// -------- HOME --------
+
 app.get('/', (req, res) => {
   if (req.session.user) {
     res.render('pages/home');
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/failed');}
 });
 
+app.get('/home', (req, res) => {
+  if(req.session.user) {
+    res.render('pages/home');
+  }
+  else {res.redirect('/login/failed');}
+});
+
+// -------- LOGIN --------
 app.get('/login', (req, res) => {
   res.render('pages/login');
 });
 
-//app.post login
+app.get('/login/invalid_request', (req, res) => {
+  res.render('pages/login',{
+    error: true,
+    message: `You must be signed in to view listings`,
+  });
+});
+
+app.get('/login/failed', (req, res) => {
+  res.render('pages/login',{
+    error: true,
+    message: `Incorrect username or password`,
+  });
+});
+
 app.post('/login', async (req, res) => {
   const username = req.body.username;
   const hash = await bcrypt
   .hash(req.body.password, 10)
   .catch(err => console.error(err.message).log('failed to encrypt pass'));
 
-  // const query = `SELECT * FROM users WHERE username = '${username}'`;
   const query = `SELECT * FROM user_table WHERE username = $1`;
 
   db.one(query, [username])
@@ -95,7 +117,7 @@ app.post('/login', async (req, res) => {
 
       if (match === false) {
         console.error("Incorrect username or password");
-        res.redirect(400, '/register');
+        res.redirect(400, '/login/failed');
       }
       else {
         user.username = username;
@@ -107,47 +129,16 @@ app.post('/login', async (req, res) => {
       }
     })
     .catch(err =>{
-      console.log(err);
-      res.redirect(400,'/register');
+      console.error(err);
+      res.redirect(400, '/login/failed');
     })
 });
+
+// -------- REGISTER --------
 
 app.get('/register', (req, res) =>{
   res.render('pages/register');
 });
-
-axios({
-  url: 'https://carapi.app/api/exterior-colors?limit=100&verbose=yes&year=2016',
-  method: 'GET'
-})
-  .then(async response => {
-    const insertCarQuery = `INSERT INTO car_table (make, model, color, price, miles, car_description) VALUES ($1, $2, $3, $4, $5, $6);`;
-
-    // Iterate over the properties of the object the API gives us
-    Object.keys(response.data.data).forEach(carId => {
-      const car = response.data.data[carId];
-      const make = car.make_model_trim.make_model.make.name;
-      const model = car.make_model_trim.make_model.name;
-      const price = car.make_model_trim.invoice;
-      const color = car.name;
-      const car_description = car.make_model_trim.description;
-      const miles = car.make_model_trim.id;
-  
-      db.query(insertCarQuery, [make, model, color, price, miles, car_description])
-      .catch(err =>{
-        console.log(err);
-        res.redirect(400,'/register');
-      });
-    });
-
-    // console.log('After DB Alteration:');
-    // let entries = await db.query('SELECT * FROM car_table');
-    // console.log(entries);
-  })
-  .catch(error => {
-      console.error('Error:', error);
-  });
-
 
 //app.post register
 app.post('/register', async (req, res) => {
@@ -185,21 +176,28 @@ app.post('/register', async (req, res) => {
   }
 });
 
-//app.post delete user
+
+// -------- PROFILE --------
+
+app.get('/profile', (req, res) => {
+  if(req.session.user) {
+    const username = user.username;
+    res.render('pages/profile', {username});
+  }
+  else {res.redirect('/login/invalid_request');}
+});
+
+
 app.post('/profile/delete', async (req, res) =>{
   if (req.session.user) {
     console.log('Before DB Alteration:');
     let entries = await db.query('SELECT * FROM user_table');
     console.log(entries);
     
-    console.log(req.session.user);
     if(req.session.user) {
-      let entries = await db.query('SELECT * FROM user_table');
-      console.log(entries);
-
       const username = user.username;
       
-      const sql = `DELETE FROM cart_table WHERE username = $1`;
+      let sql = `DELETE FROM user_table WHERE username = $1`;
       
       const result = await db.query(sql, [username]);
 
@@ -207,12 +205,11 @@ app.post('/profile/delete', async (req, res) =>{
       entries = await db.query('SELECT * FROM user_table');
       console.log(entries);
 
-      console.log(result);
       res.redirect(200,'/logout');
     }
     else {res.redirect(500,'/profile');}
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 app.get('/logout', (req, res) => {
@@ -220,43 +217,79 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.render('pages/logout');
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
-app.get('/profile', (req, res) => {
+app.post('/profile/changePassword', async (req, res) => {
   if(req.session.user) {
     const username = user.username;
+    let hash = await bcrypt.hash(req.body.password, 10);
+
+    const sql = `UPDATE user_table SET password = $1 WHERE username = $2`;
+
+    let result = db.query(sql, [hash, username])
+    .catch(err =>{
+      console.log(err);
+      res.redirect(400,'/register');
+    })
+
     res.render('pages/profile', {username});
   }
-  else {res.redirect('/login');}
-});
-
-app.get('/home', (req, res) => {
-  if(req.session.user) {
-    res.render('pages/home');
-  }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 // *****************************************************
 //:  Functionality API Routes
 // *****************************************************
 
-//Buy and search
+// -------- BUYING AND SEARCH --------
 app.get('/buy', async (req, res) => {
   if(req.session.user) {
     try {
-      const cars = await db.query('SELECT * FROM car_table ORDER BY RANDOM()');
+      let cars = await db.query('SELECT * FROM car_table ORDER BY RANDOM()');
       res.render('pages/buy', { cars });
     } catch (error) {
       console.error('Error fetching cars from the database:', error);
       res.status(500).send('Internal Server Error');
     }
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
-//Add car to cart
+axios({
+  url: 'https://carapi.app/api/exterior-colors?limit=100&verbose=yes&year=2016',
+  method: 'GET'
+})
+  .then(async response => {
+    const insertCarQuery = `INSERT INTO car_table (make, model, color, price, miles, car_description) VALUES ($1, $2, $3, $4, $5, $6);`;
+
+    // Iterate over the properties of the object the API gives us
+    Object.keys(response.data.data).forEach(carId => {
+      const car = response.data.data[carId];
+      const make = car.make_model_trim.make_model.make.name;
+      const model = car.make_model_trim.make_model.name;
+      const price = car.make_model_trim.invoice;
+      const color = car.name;
+      const car_description = car.make_model_trim.description;
+      const miles = car.make_model_trim.id;
+  
+      db.query(insertCarQuery, [make, model, color, price, miles, car_description])
+      .catch(err =>{
+        console.log(err);
+        res.redirect(400,'/register');
+      });
+    });
+
+    // console.log('After DB Alteration:');
+    // let entries = await db.query('SELECT * FROM car_table');
+    // console.log(entries);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+
+
+// -------- ADD CAR TO CART --------
 app.post('/add-to-cart', async (req, res) =>{
   if (req.session.user) {
     console.log('Before DB Alteration:');
@@ -278,22 +311,38 @@ app.post('/add-to-cart', async (req, res) =>{
     }
     else {res.redirect(500,'/profile');}
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
-//Sell
-app.get('/sell', (req, res) => {
+// -------- SELLING --------
+app.get('/sell', async (req, res) => {
   if(req.session.user) {
-    res.render('pages/sell');
+
+    const username = req.session.user.username;
+    const query = `SELECT * FROM car_table WHERE username = $1`;
+
+    let cars = await db.any(query, [username])
+    .catch(err =>{
+      console.error('Error fetching cars from the database:', err);
+      console.log(cars.data);
+      console.log(err);
+      res.status(500).send('Internal Server Error');
+    });
+
+    console.log(cars.data);
+    res.render('pages/sell', { cars });
+
   }
-  else {res.redirect('/login');}
+  else{
+    res.redirect('/login/failed');
+  }
 });
 
 app.get('/sell/new', (req, res) => {
   if(req.session.user) {
     res.render('pages/sell_new');
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 app.post('/sell/new', (req, res) =>{
@@ -306,61 +355,54 @@ app.post('/sell/new', (req, res) =>{
     const car_description = req.body.car_description;
     const username = user.username;
 
-    // if(!make | !model | !price){
-    //   //Send message 
-    //   res.status(400);
-    //   return; 
-    // }
+    const query = `INSERT INTO car_table(make, model, color, price, miles, car_description, username) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
 
-    if(!miles){
-      miles = '-1';
-    }
-
-    const sql = `INSERT INTO car_table(make, model, color, price, miles, car_description, username) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
-
-    const result = db.query(sql, [make, model, color, price, miles, car_description, username])
-    .then(() =>{
-      console.log(result);
-      res.json({
-        status: 'success', 
-        make: make, 
-        model: model
-      });
-    })
+    const result = db.query(query, [make, model, color, price, miles, car_description, username])
     .catch(err =>{
       console.log(err);
       console.log(result);
-      res.redirect(400,'/sell/view');
     });
+    res.redirect('/sell');
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
-app.get('/sell/view', (req, res) => {
+app.get('/sell/remove-listing', (req, res) => {
   if(req.session.user) {
-    res.render('pages/sell_view');
+    res.redirect('/sell');
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
-//Accessories
+app.post('/sell/remove-listing', (req, res) =>{
+  if(!req.session.user) {
+    res.redirect('/login');
+  }
+
+  const username = req.session.user.username;
+  const car_id = req.body.car_id;
+  const query = `DELETE FROM car_table WHERE username = $1 AND car_id = $2;`;
+
+  db.query(query, [username, car_id])
+    .catch(err =>{
+      console.log(err);
+      res.status(400).json({
+        message: `failed to remove listing`
+      });
+    })
+    res.redirect('/sell');
+});
+
+// -------- ACCESSORIES --------
 app.get('/accessories', (req, res) => {
   if(req.session.user) {
     res.render('pages/accessories');
   }
-  else {res.redirect('/login');}
-});
-
-//Messaging
-app.get('/messages', (req, res) => {
-  if(req.session.user) {
-    res.render('pages/messages');
-  }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 
-//Legacy
+// -------- TESTING --------
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
