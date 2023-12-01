@@ -255,11 +255,11 @@ app.get('/home', (req, res) => {
 //:  Functionality API Routes
 // *****************************************************
 
-//Buy and search
+// -------- BUYING AND SEARCH --------
 app.get('/buy', async (req, res) => {
   if(req.session.user) {
     try {
-      const cars = await db.query('SELECT * FROM car_table ORDER BY RANDOM()');
+      let cars = await db.query('SELECT * FROM car_table ORDER BY RANDOM()');
       res.render('pages/buy', { cars });
     } catch (error) {
       console.error('Error fetching cars from the database:', error);
@@ -269,7 +269,7 @@ app.get('/buy', async (req, res) => {
   else {res.redirect('/login');}
 });
 
-//Add car to cart
+// -------- ADD CAR TO CART --------
 app.post('/add-to-cart', async (req, res) =>{
   if (req.session.user) {
     console.log('Before DB Alteration:');
@@ -294,12 +294,28 @@ app.post('/add-to-cart', async (req, res) =>{
   else {res.redirect('/login');}
 });
 
-//Sell
-app.get('/sell', (req, res) => {
+// -------- SELLING --------
+app.get('/sell', async (req, res) => {
   if(req.session.user) {
-    res.render('pages/sell');
+
+    const username = req.session.user.username;
+    const query = `SELECT * FROM car_table WHERE username = $1`;
+
+    let cars = await db.any(query, [username])
+    .catch(err =>{
+      console.error('Error fetching cars from the database:', err);
+      console.log(cars.data);
+      console.log(err);
+      res.status(500).send('Internal Server Error');
+    });
+
+    console.log(cars.data);
+    res.render('pages/sell', { cars });
+
   }
-  else {res.redirect('/login');}
+  else{
+    res.redirect('/login');
+  }
 });
 
 app.get('/sell/new', (req, res) => {
@@ -319,44 +335,45 @@ app.post('/sell/new', (req, res) =>{
     const car_description = req.body.car_description;
     const username = user.username;
 
-    // if(!make | !model | !price){
-    //   //Send message 
-    //   res.status(400);
-    //   return; 
-    // }
+    const query = `INSERT INTO car_table(make, model, color, price, miles, car_description, username) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
 
-    if(!miles){
-      miles = '-1';
-    }
-
-    const sql = `INSERT INTO car_table(make, model, color, price, miles, car_description, username) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
-
-    const result = db.query(sql, [make, model, color, price, miles, car_description, username])
-    .then(() =>{
-      console.log(result);
-      res.json({
-        status: 'success', 
-        make: make, 
-        model: model
-      });
-    })
+    const result = db.query(query, [make, model, color, price, miles, car_description, username])
     .catch(err =>{
       console.log(err);
       console.log(result);
-      res.redirect(400,'/sell/view');
     });
+    res.redirect('/sell');
   }
   else {res.redirect('/login');}
 });
 
-app.get('/sell/view', (req, res) => {
+app.get('/sell/remove-listing', (req, res) => {
   if(req.session.user) {
-    res.render('pages/sell_view');
+    res.redirect('/sell');
   }
   else {res.redirect('/login');}
 });
 
-//Accessories
+app.post('/sell/remove-listing', (req, res) =>{
+  if(!req.session.user) {
+    res.redirect('/login');
+  }
+
+  const username = req.session.user.username;
+  const car_id = req.body.car_id;
+  const query = `DELETE FROM car_table WHERE username = $1 AND car_id = $2;`;
+
+  db.query(query, [username, car_id])
+    .catch(err =>{
+      console.log(err);
+      res.status(400).json({
+        message: `failed to remove listing`
+      });
+    })
+    res.redirect('/sell');
+});
+
+// -------- ACCESSORIES --------
 app.get('/accessories', (req, res) => {
   if(req.session.user) {
     res.render('pages/accessories');
@@ -366,7 +383,7 @@ app.get('/accessories', (req, res) => {
 
 
 
-//Legacy
+// -------- TESTING --------
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });

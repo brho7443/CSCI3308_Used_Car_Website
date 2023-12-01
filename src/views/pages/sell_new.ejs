@@ -7,32 +7,32 @@
     <form action="/sell/new" method="POST"> 
         <div class="mb-3">
             <label for="make">Make:</label>
-            <input type="text" id="make" name="make" />
+            <input type="text" id="make" name="make" required/>
         </div>
         
         <div class="mb-3">
             <label for="model">Model:</label>
-            <input type="text" id="model" name="model" />
+            <input type="text" id="model" name="model" required/>
         </div>
 
         <div class="mb-3">
             <label for="color">Color:</label>
-            <input type="text" id="color" name="color" />
+            <input type="text" id="color" name="color" required/>
         </div>
 
         <div class="mb-3">
             <label for="price">Price:</label>
-            <input type="number" id="price" name="price" />
+            <input type="number" id="price" name="price" required/>
         </div>
 
         <div class="mb-3">
             <label for="miles">Miles:</label>
-            <input type="number" id="miles" name="miles" />
+            <input type="number" id="miles" name="miles" required/>
         </div>
 
         <div class="mb-3">
-            <label for="mpg">Description:</label>
-            <input type="text" id="car_description" name="car_description" />
+            <label for="mpg">Engine Type:</label>
+            <input type="text" id="car_description" name="car_description" required/>
         </div>
         
         <button type="submit" class="btn btn-primary">Submit</button>
