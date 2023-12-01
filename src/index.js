@@ -68,25 +68,47 @@ const user = {
   cart_id : undefined
 }
 
+// -------- HOME --------
+
 app.get('/', (req, res) => {
   if (req.session.user) {
     res.render('pages/home');
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/failed');}
 });
 
+app.get('/home', (req, res) => {
+  if(req.session.user) {
+    res.render('pages/home');
+  }
+  else {res.redirect('/login/failed');}
+});
+
+// -------- LOGIN --------
 app.get('/login', (req, res) => {
   res.render('pages/login');
 });
 
-//app.post login
+app.get('/login/invalid_request', (req, res) => {
+  res.render('pages/login',{
+    error: true,
+    message: `You must be signed in to view listings`,
+  });
+});
+
+app.get('/login/failed', (req, res) => {
+  res.render('pages/login',{
+    error: true,
+    message: `Incorrect username or password`,
+  });
+});
+
 app.post('/login', async (req, res) => {
   const username = req.body.username;
   const hash = await bcrypt
   .hash(req.body.password, 10)
   .catch(err => console.error(err.message).log('failed to encrypt pass'));
 
-  // const query = `SELECT * FROM users WHERE username = '${username}'`;
   const query = `SELECT * FROM user_table WHERE username = $1`;
 
   db.one(query, [username])
@@ -95,7 +117,7 @@ app.post('/login', async (req, res) => {
 
       if (match === false) {
         console.error("Incorrect username or password");
-        res.redirect(400, '/register');
+        res.redirect(400, '/login/failed');
       }
       else {
         user.username = username;
@@ -107,47 +129,16 @@ app.post('/login', async (req, res) => {
       }
     })
     .catch(err =>{
-      console.log(err);
-      res.redirect(400,'/register');
+      console.error(err);
+      res.redirect(400, '/login/failed');
     })
 });
+
+// -------- REGISTER --------
 
 app.get('/register', (req, res) =>{
   res.render('pages/register');
 });
-
-axios({
-  url: 'https://carapi.app/api/exterior-colors?limit=100&verbose=yes&year=2016',
-  method: 'GET'
-})
-  .then(async response => {
-    const insertCarQuery = `INSERT INTO car_table (make, model, color, price, miles, car_description) VALUES ($1, $2, $3, $4, $5, $6);`;
-
-    // Iterate over the properties of the object the API gives us
-    Object.keys(response.data.data).forEach(carId => {
-      const car = response.data.data[carId];
-      const make = car.make_model_trim.make_model.make.name;
-      const model = car.make_model_trim.make_model.name;
-      const price = car.make_model_trim.invoice;
-      const color = car.name;
-      const car_description = car.make_model_trim.description;
-      const miles = car.make_model_trim.id;
-  
-      db.query(insertCarQuery, [make, model, color, price, miles, car_description])
-      .catch(err =>{
-        console.log(err);
-        res.redirect(400,'/register');
-      });
-    });
-
-    // console.log('After DB Alteration:');
-    // let entries = await db.query('SELECT * FROM car_table');
-    // console.log(entries);
-  })
-  .catch(error => {
-      console.error('Error:', error);
-  });
-
 
 //app.post register
 app.post('/register', async (req, res) => {
@@ -185,7 +176,18 @@ app.post('/register', async (req, res) => {
   }
 });
 
-//app.post delete user
+
+// -------- PROFILE --------
+
+app.get('/profile', (req, res) => {
+  if(req.session.user) {
+    const username = user.username;
+    res.render('pages/profile', {username});
+  }
+  else {res.redirect('/login/invalid_request');}
+});
+
+
 app.post('/profile/delete', async (req, res) =>{
   if (req.session.user) {
     console.log('Before DB Alteration:');
@@ -207,7 +209,7 @@ app.post('/profile/delete', async (req, res) =>{
     }
     else {res.redirect(500,'/profile');}
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 app.get('/logout', (req, res) => {
@@ -215,15 +217,7 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.render('pages/logout');
   }
-  else {res.redirect('/login');}
-});
-
-app.get('/profile', (req, res) => {
-  if(req.session.user) {
-    const username = user.username;
-    res.render('pages/profile', {username});
-  }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 app.post('/profile/changePassword', async (req, res) => {
@@ -241,14 +235,7 @@ app.post('/profile/changePassword', async (req, res) => {
 
     res.render('pages/profile', {username});
   }
-  else {res.redirect('/login');}
-});
-
-app.get('/home', (req, res) => {
-  if(req.session.user) {
-    res.render('pages/home');
-  }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 // *****************************************************
@@ -266,8 +253,41 @@ app.get('/buy', async (req, res) => {
       res.status(500).send('Internal Server Error');
     }
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
+
+axios({
+  url: 'https://carapi.app/api/exterior-colors?limit=100&verbose=yes&year=2016',
+  method: 'GET'
+})
+  .then(async response => {
+    const insertCarQuery = `INSERT INTO car_table (make, model, color, price, miles, car_description) VALUES ($1, $2, $3, $4, $5, $6);`;
+
+    // Iterate over the properties of the object the API gives us
+    Object.keys(response.data.data).forEach(carId => {
+      const car = response.data.data[carId];
+      const make = car.make_model_trim.make_model.make.name;
+      const model = car.make_model_trim.make_model.name;
+      const price = car.make_model_trim.invoice;
+      const color = car.name;
+      const car_description = car.make_model_trim.description;
+      const miles = car.make_model_trim.id;
+  
+      db.query(insertCarQuery, [make, model, color, price, miles, car_description])
+      .catch(err =>{
+        console.log(err);
+        res.redirect(400,'/register');
+      });
+    });
+
+    // console.log('After DB Alteration:');
+    // let entries = await db.query('SELECT * FROM car_table');
+    // console.log(entries);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+
 
 // -------- ADD CAR TO CART --------
 app.post('/add-to-cart', async (req, res) =>{
@@ -291,7 +311,7 @@ app.post('/add-to-cart', async (req, res) =>{
     }
     else {res.redirect(500,'/profile');}
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 // -------- SELLING --------
@@ -314,7 +334,7 @@ app.get('/sell', async (req, res) => {
 
   }
   else{
-    res.redirect('/login');
+    res.redirect('/login/failed');
   }
 });
 
@@ -322,7 +342,7 @@ app.get('/sell/new', (req, res) => {
   if(req.session.user) {
     res.render('pages/sell_new');
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 app.post('/sell/new', (req, res) =>{
@@ -344,14 +364,14 @@ app.post('/sell/new', (req, res) =>{
     });
     res.redirect('/sell');
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 app.get('/sell/remove-listing', (req, res) => {
   if(req.session.user) {
     res.redirect('/sell');
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
 
 app.post('/sell/remove-listing', (req, res) =>{
@@ -378,9 +398,8 @@ app.get('/accessories', (req, res) => {
   if(req.session.user) {
     res.render('pages/accessories');
   }
-  else {res.redirect('/login');}
+  else {res.redirect('/login/invalid_request');}
 });
-
 
 
 // -------- TESTING --------
