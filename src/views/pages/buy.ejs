@@ -2,29 +2,87 @@
 <%- include ('../partials/header') %> 
 <%- include ('../partials/menu') %>
 
+<style>
+  .btn-custom-wizard-purple{
+    background-color: #57418A;
+  }
+  .bg-custom-wizard-gold{
+    background-color: #FCC926;
+  }
+  .bg-custom-wizard-beard{
+    background-color: rgb(210, 210, 255);
+  }
+  .bg-custom-wizard-beard-dark{
+    background-color: rgb(145, 145, 194);
+  }
+</style>
+
 <main>
-    <h1>Car Listings Page</h1>
-    
-    <div class="car-list">
-      <% cars.forEach(car => { %>
-        <div class="car-item">
-          <h2><%= car.make %> <%= car.model %></h2>
-          <p>Color: <%= car.color %></p>
-          <p>Price: $<%= car.price.toFixed(2) %></p>
-          <p>Miles: <%= car.miles %></p>
-          <p>Description: <%= car.car_description %></p>
-  
-          <% if (car.username) { %>
-            <p>Seller: <%= car.username %></p>
-          <% } %>
-  
-          <form action="/add-to-cart" method="POST">
-            <input type="hidden" name="car_id" value="<%= car.car_id %>">
-            <button type="submit">Add to Cart</button>
-          </form>
-        </div>
-      <% }) %>
+    <nav class="navbar bg-custom-wizard-beard-dark">
+      <div class="container-fluid">
+        <h2 style="color: #FCC926; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;">Car Listings</h2>
+        <form class="d-flex" id="carSearchForm">
+          <input class="form-control" type="search" placeholder="Search" aria-label="Search" id="carSearchInput">
+          <button class="btn btn-custom-wizard-purple" type="submit"><h6 style="color: white;">Filter</h6></button>
+        </form>
+      </div>
+    </nav>
+
+    <div class="table-responsive bg-custom-wizard-beard">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Make</th>
+            <th>Model</th>
+            <th>Color</th>
+            <th>Price</th>
+            <th>Miles</th>
+            <th>Description</th>
+            <th>Seller</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% cars.forEach(car => { %>
+            <tr class="car-item">
+              <td><%= car.make %></td>
+              <td><%= car.model %></td>
+              <td><%= car.color %></td>
+              <td>$<%= car.price.toFixed(2) %></td>
+              <td><%= car.miles %></td>
+              <td><%= car.car_description %></td>
+              <td><%= car.username || 'N/A' %></td>
+              <td>
+                <form action="/add-to-cart" method="POST">
+                  <input type="hidden" name="car_id" value="<%= car.car_id %>">
+                  <button type="submit" class="btn btn-custom-wizard-purple"><h6 style="color: white;">Add to Favorites</h6></button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
     </div>
-</main>  
+  </main>
 
 <%- include ('../partials/footer') %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('carSearchForm');
+    const input = document.getElementById('carSearchInput');
+    const carItems = document.querySelectorAll('.car-item');
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const searchTerm = input.value.toLowerCase();
+
+      carItems.forEach(function (carItem) {
+        const carText = carItem.textContent.toLowerCase();
+        const isVisible = carText.includes(searchTerm);
+
+        carItem.style.display = isVisible ? 'table-row' : 'none';
+      });
+    });
+  });
+</script>
