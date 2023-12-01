@@ -194,14 +194,10 @@ app.post('/profile/delete', async (req, res) =>{
     let entries = await db.query('SELECT * FROM user_table');
     console.log(entries);
     
-    console.log(req.session.user);
     if(req.session.user) {
-      let entries = await db.query('SELECT * FROM user_table');
-      console.log(entries);
-
       const username = user.username;
       
-      const sql = `DELETE FROM cart_table WHERE username = $1`;
+      let sql = `DELETE FROM user_table WHERE username = $1`;
       
       const result = await db.query(sql, [username]);
 
@@ -209,7 +205,6 @@ app.post('/profile/delete', async (req, res) =>{
       entries = await db.query('SELECT * FROM user_table');
       console.log(entries);
 
-      console.log(result);
       res.redirect(200,'/logout');
     }
     else {res.redirect(500,'/profile');}
@@ -225,6 +220,23 @@ app.get('/logout', (req, res) => {
   else {res.redirect('/login/invalid_request');}
 });
 
+app.post('/profile/changePassword', async (req, res) => {
+  if(req.session.user) {
+    const username = user.username;
+    let hash = await bcrypt.hash(req.body.password, 10);
+
+    const sql = `UPDATE user_table SET password = $1 WHERE username = $2`;
+
+    let result = db.query(sql, [hash, username])
+    .catch(err =>{
+      console.log(err);
+      res.redirect(400,'/register');
+    })
+
+    res.render('pages/profile', {username});
+  }
+  else {res.redirect('/login/invalid_request');}
+});
 
 // *****************************************************
 //:  Functionality API Routes
@@ -385,14 +397,6 @@ app.post('/sell/remove-listing', (req, res) =>{
 app.get('/accessories', (req, res) => {
   if(req.session.user) {
     res.render('pages/accessories');
-  }
-  else {res.redirect('/login/invalid_request');}
-});
-
-//Messaging
-app.get('/messages', (req, res) => {
-  if(req.session.user) {
-    res.render('pages/messages');
   }
   else {res.redirect('/login/invalid_request');}
 });
