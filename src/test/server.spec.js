@@ -32,7 +32,7 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/register')
-      .send({username: 'user', password: '1234'})
+      .send({username: 'test_user_8529', password: '1234'})
       .end((err, res) => {
         expect(res).to.have.status(201);
         // expect(res.body.message).to.equals('Successfully created user!');
@@ -58,7 +58,7 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/register')
-      .send({wrong_input: 'user', wrong_input: '1234'})
+      .send({wrong_input: 'test_user_8529', wrong_input: '1234'})
       .end((err, res) => {
         expect(res).to.have.status(400);
         // expect(res.body.message).to.equals('Invalid input.');
@@ -71,7 +71,7 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/login')
-      .send({username: 'user', password: '1234'})
+      .send({username: 'test_user_8529', password: '1234'})
       .end((err, res) => {
         expect(res).to.have.status(200);
         // expect(res.body.message).to.equals('Successfully deleted user!');
@@ -97,7 +97,7 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/login')
-      .send({username: 'user', password: 'wrong_password'})
+      .send({username: 'test_user_8529', password: 'wrong_password'})
       .end((err, res) => {
         expect(res).to.have.status(401);
         // expect(res.body.message).to.equals('Successfully deleted user!');
@@ -110,7 +110,7 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/deleteProfileTest')
-      .send({username: 'user'})
+      .send({username: 'test_user_8529'})
       .end((err, res) => {
         expect(res).to.have.status(200);
         done();

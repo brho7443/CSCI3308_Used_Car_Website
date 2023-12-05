@@ -113,7 +113,7 @@ app.post('/login', async (req, res) => {
 
   const query = `SELECT * FROM user_table WHERE username = $1`;
 
-  db.one(query, [username])
+  await db.one(query, [username])
     .then(async (data) =>{
       const match = await bcrypt.compare(req.body.password, data.password);
 
@@ -177,9 +177,8 @@ app.post('/register', async (req, res) => {
 
     const sql = `INSERT INTO user_table(username, password) VALUES ($1, $2)`;
     
-    const result = db.query(sql, [username, hash])
+    let result = await db.query(sql, [username, hash])
     .then(() =>{
-      console.log(result);
       res.status(201).render('pages/register',{
         error: false,
         message: `Successfully registered user!`,
@@ -267,7 +266,7 @@ app.post('/profile/changePassword', async (req, res) => {
 
     const sql = `UPDATE user_table SET password = $1 WHERE username = $2`;
 
-    let result = db.query(sql, [hash, username])
+    let result = await db.query(sql, [hash, username])
     .catch(err =>{
       console.log(err);
       res.redirect(400,'/register');
@@ -314,7 +313,7 @@ axios({
     const insertCarQuery = `INSERT INTO car_table (make, model, color, price, miles, car_description) VALUES ($1, $2, $3, $4, $5, $6);`;
 
     // Iterate over the properties of the object the API gives us
-    Object.keys(response.data.data).forEach(carId => {
+    Object.keys(response.data.data).forEach(async carId => {
       const car = response.data.data[carId];
       const make = car.make_model_trim.make_model.make.name;
       const model = car.make_model_trim.make_model.name;
@@ -323,7 +322,7 @@ axios({
       const car_description = car.make_model_trim.description;
       const miles = car.make_model_trim.id;
   
-      db.query(insertCarQuery, [make, model, color, price, miles, car_description])
+      await db.query(insertCarQuery, [make, model, color, price, miles, car_description])
       .catch(err =>{
         console.log(err);
         res.redirect(400,'/register');
@@ -353,11 +352,59 @@ app.post('/add-to-cart', async (req, res) =>{
       const sql = `INSERT INTO cart_table (car_id, username) VALUES ($1, $2)`;
       await db.query(sql, [car_id, username])
 
-      console.log('After DB Alteration:');
-      entries = await db.query('SELECT * FROM cart_table');
-      console.log(entries);
+      // console.log('After DB Alteration:');
+      // entries = await db.query('SELECT * FROM cart_table');
+      // console.log(entries);
 
       res.redirect('/buy');
+    }
+    else {res.redirect(500,'/profile');}
+  }
+  else{
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
+  }
+});
+
+app.get('/cart', async (req, res) => {
+  if(req.session.user) {
+    try {
+      let username = user.username;
+      let cars = await db.query('SELECT car_table.* FROM cart_table JOIN car_table ON cart_table.car_id = car_table.car_id WHERE cart_table.username = $1', username);
+      res.render('pages/cart', { cars, username });
+    } catch (error) {
+      console.error('Error fetching cars from the database:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  }
+  else{
+    res.status(401).render('pages/login',{
+      error: true,
+      message: `You must be signed in to view listings`,
+    });
+  }
+});
+
+app.post('/remove-from-cart', async (req, res) =>{
+  if (req.session.user) {
+    // console.log('Before DB Alteration:');
+    // let entries = await db.query('SELECT * FROM cart_table');
+    // console.log(entries);
+    
+    if(req.session.user) {
+      const car_id = req.body.car_id;
+      const username = user.username;
+      
+      const sql = `DELETE FROM cart_table WHERE car_id = $1 AND username = $2`;
+      await db.query(sql, [car_id, username])
+
+      // console.log('After DB Alteration:');
+      // entries = await db.query('SELECT * FROM cart_table');
+      // console.log(entries);
+
+      res.redirect('/cart');
     }
     else {res.redirect(500,'/profile');}
   }
@@ -379,12 +426,10 @@ app.get('/sell', async (req, res) => {
     let cars = await db.any(query, [username])
     .catch(err =>{
       console.error('Error fetching cars from the database:', err);
-      console.log(cars.data);
       console.log(err);
       res.status(500).send('Internal Server Error');
     });
 
-    console.log(cars.data);
     res.render('pages/sell', { cars });
 
   }
@@ -408,7 +453,7 @@ app.get('/sell/new', (req, res) => {
   }
 });
 
-app.post('/sell/new', (req, res) =>{
+app.post('/sell/new', async (req, res) =>{
   if(req.session.user) {
     const make = req.body.make;
     const model = req.body.model;
@@ -420,10 +465,9 @@ app.post('/sell/new', (req, res) =>{
 
     const query = `INSERT INTO car_table(make, model, color, price, miles, car_description, username) VALUES ($1, $2, $3, $4, $5, $6, $7)`;
 
-    const result = db.query(query, [make, model, color, price, miles, car_description, username])
+    const result = await db.query(query, [make, model, color, price, miles, car_description, username])
     .catch(err =>{
       console.log(err);
-      console.log(result);
     });
     res.render('pages/sell_new',{
       error: false,
@@ -450,7 +494,7 @@ app.get('/sell/remove-listing', (req, res) => {
   }
 });
 
-app.post('/sell/remove-listing', (req, res) =>{
+app.post('/sell/remove-listing', async (req, res) =>{
   if(!req.session.user) {
     res.redirect('/login');
   }
@@ -459,7 +503,7 @@ app.post('/sell/remove-listing', (req, res) =>{
   const car_id = req.body.car_id;
   const query = `DELETE FROM car_table WHERE username = $1 AND car_id = $2;`;
 
-  db.query(query, [username, car_id])
+  await db.query(query, [username, car_id])
     .catch(err =>{
       console.log(err);
       res.status(400).json({
@@ -489,7 +533,6 @@ app.get('/welcome', (req, res) => {
 
 app.post('/deleteProfileTest', async (req, res) => {
     const username = req.body.username;
-    console.log("here");
     // Delete user's data from cart_table
     await db.query('DELETE FROM cart_table WHERE username = $1', [username]);
 
