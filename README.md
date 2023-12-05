@@ -10,6 +10,7 @@ Michael Stich, Michael Gisecke, Cobhan Kale, Ananya Tandel, Brock Hoos
     - Postgres SQL
     - EJS & CSS
     - Javascript
+    - Node.js
 
 ### Prerequisites to run the application - Any software that needs to be installed to run the application
     - Docker Desktop
@@ -18,11 +19,9 @@ Michael Stich, Michael Gisecke, Cobhan Kale, Ananya Tandel, Brock Hoos
     - Navigate to the "src" directory
     - Run "docker-compose up"
     - Go to "http://localhost:3000"
-    Shutdown (Important)
-    - Run "docker-compose down -v"
 
 ### How to run the tests 
-    Tests run by default on startup
+    Tests run by default on startup, if a test does not pass the server will not run
 
 ### Link to the deployed application
     <Later lab>

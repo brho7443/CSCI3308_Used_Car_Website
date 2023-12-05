@@ -53,56 +53,68 @@ describe('Server!', () => {
       });
   });
 
-    // Test what will happen if wrong fields are passed into API
-    it('Negative : /register wrong fields were passed into API', done => {
-      chai
-        .request(server)
-        .post('/register')
-        .send({wrong_input: 'user', wrong_input: '1234'})
-        .end((err, res) => {
-          expect(res).to.have.status(400);
-          // expect(res.body.message).to.equals('Invalid input.');
-          done();
-        });
-    });
+  // Test what will happen if wrong fields are passed into API
+  it('Negative : /register wrong fields were passed into API', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({wrong_input: 'user', wrong_input: '1234'})
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        // expect(res.body.message).to.equals('Invalid input.');
+        done();
+      });
+  });
 
-    // Test to check if user can be successfully logged in
-    it('Positive : /login successfully logs in the user', done => {
-      chai
-        .request(server)
-        .post('/login')
-        .send({username: 'user', password: '1234'})
-        .end((err, res) => {
-          expect(res).to.have.status(200);
-          // expect(res.body.message).to.equals('Successfully deleted user!');
-          done();
-        });
-    });
+  // Test to check if user can be successfully logged in
+  it('Positive : /login successfully logs in the user', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username: 'user', password: '1234'})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        // expect(res.body.message).to.equals('Successfully deleted user!');
+        done();
+      });
+  });
 
-    // Test to check if user will be rejected log in if username is wrong
-    it('Negative : /login denies log in if username is wrong', done => {
-      chai
-        .request(server)
-        .post('/login')
-        .send({username: 'user1', password: '1234'})
-        .end((err, res) => {
-          expect(res).to.have.status(401);
-          // expect(res.body.message).to.equals('Successfully deleted user!');
-          done();
-        });
-    });
+  // Test to check if user will be rejected log in if username is wrong
+  it('Negative : /login denies log in if username is wrong', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username: 'user1', password: '1234'})
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        // expect(res.body.message).to.equals('Successfully deleted user!');
+        done();
+      });
+  });
 
-    // // Test to check if user will be rejected log in if password is wrong
-    it('Negative : /login denies log in if password is wrong', done => {
-      chai
-        .request(server)
-        .post('/login')
-        .send({username: 'user', password: 'wrong_password'})
-        .end((err, res) => {
-          expect(res).to.have.status(401);
-          // expect(res.body.message).to.equals('Successfully deleted user!');
-          done();
-        });
-    });
+  // Test to check if user will be rejected log in if password is wrong
+  it('Negative : /login denies log in if password is wrong', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username: 'user', password: 'wrong_password'})
+      .end((err, res) => {
+        expect(res).to.have.status(401);
+        // expect(res.body.message).to.equals('Successfully deleted user!');
+        done();
+      });
+  });
+
+  // Test to check if you can delete already registered user
+  it('Positive : /deleteProfileTest successfully deletes user from database', done => {
+    chai
+      .request(server)
+      .post('/deleteProfileTest')
+      .send({username: 'user'})
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
 
 });

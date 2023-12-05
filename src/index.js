@@ -228,28 +228,30 @@ app.get('/profile', (req, res) => {
 });
 
 
-app.post('/profile/delete', async (req, res) =>{
+app.post('/profile/delete', async (req, res) => {
   if (req.session.user) {
-    console.log('Before DB Alteration:');
-    let entries = await db.query('SELECT * FROM user_table');
-    console.log(entries);
+    // console.log('Before DB Alteration:');
+    // let entries = await db.query('SELECT * FROM user_table');
+    // console.log(entries);
     
-    if(req.session.user) {
-      const username = user.username;
-      
-      let sql = `DELETE FROM user_table WHERE username = $1`;
-      
-      const result = await db.query(sql, [username]);
+    const username = user.username;
 
-      console.log('After DB Alteration:');
-      entries = await db.query('SELECT * FROM user_table');
-      console.log(entries);
+    // Delete user's data from cart_table
+    await db.query('DELETE FROM cart_table WHERE username = $1', [username]);
 
-      res.redirect(200,'/logout');
-    }
-    else {res.redirect(500,'/profile');}
+    // Delete user's data from car_table
+    await db.query('DELETE FROM car_table WHERE username = $1', [username]);
+
+    // Delete user from user_table
+    await db.query('DELETE FROM user_table WHERE username = $1', [username]);
+
+    // console.log('After DB Alteration:');
+    // entries = await db.query('SELECT * FROM user_table');
+    // console.log(entries);
+
+    res.redirect('/logout');
   }
-  else{
+  else {
     res.status(401).render('pages/login',{
       error: true,
       message: `You must be signed in to view listings`,
@@ -340,9 +342,9 @@ axios({
 // -------- ADD CAR TO CART --------
 app.post('/add-to-cart', async (req, res) =>{
   if (req.session.user) {
-    console.log('Before DB Alteration:');
-    let entries = await db.query('SELECT * FROM cart_table');
-    console.log(entries);
+    // console.log('Before DB Alteration:');
+    // let entries = await db.query('SELECT * FROM cart_table');
+    // console.log(entries);
     
     if(req.session.user) {
       const car_id = req.body.car_id;
@@ -485,9 +487,24 @@ app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
 
+app.post('/deleteProfileTest', async (req, res) => {
+    const username = req.body.username;
+    console.log("here");
+    // Delete user's data from cart_table
+    await db.query('DELETE FROM cart_table WHERE username = $1', [username]);
+
+    // Delete user's data from car_table
+    await db.query('DELETE FROM car_table WHERE username = $1', [username]);
+
+    // Delete user from user_table
+    await db.query('DELETE FROM user_table WHERE username = $1', [username]);
+
+    res.redirect(200,'/logout');
+});
+
 // *****************************************************
 //  Start Server for Dev
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
 module.exports = app.listen(3000);
-console.log('Server is listening on port 3000');
+console.log('Server is listening on port 3000, at http://localhost:3000/');
