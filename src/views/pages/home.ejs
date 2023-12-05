@@ -3,11 +3,23 @@
 <%- include ('../partials/menu') %>
 <head>
     <style>
-      button {
-            padding: 8px;
-            background-color: #389d69;
-            color: #fff;
-        }
+    body {
+        background-color: #71619b;
+      }
+      .btn-custom-wizard-purple{
+    background-color: #57418A;
+  }
+  .bg-custom-wizard-gold{
+    background-color: #FCC926;
+  }
+  
+  .bg-custom-wizard-beard-dark{
+    background-color: rgb(145, 145, 194);
+  }
+
+  .card{
+    background-color: rgb(210, 210, 255);
+  }
     </style>
 </head>
 <main>
@@ -29,9 +41,9 @@
           <div class="card" id="hobby-card-1">
             <img class="card-img-top" src="https://raw.githubusercontent.com/stichmc/wheel-wizard/main/src/resources/img/buyCar.png" alt="buyCar" height="300" width="100">
             <div class="card-body">
-              <h5 class="card-title">Buy</h5>
-              <p class="card-text">Find your next car here.</p>
-              <button class="btn btn-primary" onclick="redirectToPage('/buy')">Go to Buy</button>
+              <h5 class="card-title" style="color: #FCC926; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;">Buy</h5>
+              <p class="card-text" style="color: #FCC926; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;">Find your next car here.</p>
+              <button class="btn btn-custom-wizard-purple" onclick="redirectToPage('/buy')"><h6 style = "color:white;">Go to Buy</h6></button>
             </div>
           </div>
         </div>
@@ -39,24 +51,25 @@
       <div class="col">
         <div class="card" id="hobby-card-2">
           <img class="card-img-top" src="https://raw.githubusercontent.com/stichmc/wheel-wizard/main/src/resources/img/sellCar.png" alt="sellCar" height="300" width="100">
-          <div class="card-body">
-            <h5 class="card-title">Sell</h5>
-            <p class="card-text">List your car here.</p>
-            <button class="btn btn-primary" onclick="redirectToPage('/sell')">Go to Sell</button>
+            <div class="card-body">
+            <h5 class="card-title" style="color: #FCC926; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;">Sell</h5>
+            <p class="card-text" style="color: #FCC926; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;">List your car here.</p>
+            <button class="btn btn-custom-wizard-purple" onclick="redirectToPage('/sell')"><h6 style = "color:white;">Go to Sell</h6></button>
+            </div>
           </div>
         </div>
-      </div>
       <div class="col">
         <div class="card" id="hobby-card-3">
           <img class="card-img-top" src="https://raw.githubusercontent.com/stichmc/wheel-wizard/main/src/resources/img/accessory.png" alt="accessory" height="300" width="150">
           <div class="card-body">
-            <h5 class="card-title">Accessories</h5>
-            <p class="card-text">Any accessory your car might need.</p>
-            <button class="btn btn-primary" onclick="redirectToPage('/accessories')">Go to Accessories</button>
+            <h5 class="card-title" style="color: #FCC926; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;">Accessories</h5>
+            <p class="card-text" style="color: #FCC926; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;">Any accessory your car might need.</p>
+            <button class="btn btn-custom-wizard-purple" onclick="redirectToPage('/accessories')"><h6 style = "color:white;"> Go to Accessories</h6></button>
           </div>
         </div>
       </div>
     </div>
+ 
   </div>
 </main>
 
