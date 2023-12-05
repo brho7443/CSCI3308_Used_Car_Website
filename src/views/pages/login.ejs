@@ -1,11 +1,11 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
 
-<main class="container">
+<main class="container" >
   <% if (locals.message) { %>
     <div
       class="alert alert-<%- locals.error ? 'danger' : 'success' %>"
-      role="alert"
+      role="alert" style="padding: 1rem;"
     >
       <%= message %>
     </div>
