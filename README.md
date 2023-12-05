@@ -1,5 +1,7 @@
 # wheel wizard
 
+### Recitation 13 Team 1
+
 ## Brief Application description
 Website where users can search for used cars, save their favorite cars to their cart, and list cars to sell on the website
 
@@ -24,4 +26,5 @@ Michael Stich, Michael Gisecke, Cobhan Kale, Ananya Tandel, Brock Hoos
     Tests run by default on startup, if a test does not pass the server will not run
 
 ### Link to the deployed application
-    <Later lab>
+    http://wheelwizards.eastus.cloudapp.azure.com:3000/home
+    - Contact Cobhan K to activate page

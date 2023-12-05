@@ -1,39 +1,27 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
 
-<style>
-    .btn-custom-wizard-purple{
-      background-color: #57418A;
-    }
-    .bg-custom-wizard-gold{
-      background-color: #FCC926;
-    }
-    .bg-custom-wizard-beard{
-      background-color: rgb(210, 210, 255);
-    }
-    .bg-custom-wizard-beard-dark{
-      background-color: rgb(145, 145, 194);
-    }
-  </style>
-
 <main>
     <nav class="navbar bg-custom-wizard-beard-dark">
         <div class="container-fluid">
           <h1 style="position: relative; left: 8rem; color: #FCC926; text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;">List a Car to sell</h>
         </div>  
       </nav>
-    <% if (locals.message) { %>
-        <div
-          class="alert alert-<%- locals.error ? 'danger' : 'success' %>"
-          role="alert" style="padding: 1rem;"
-        >
-          <%= message %>
-          <div class="mt-3">
-            <a href="/sell" class="btn btn-link">View Listing</a>
+      <div class="container-fluid">
+        <% if (locals.message) { %>
+          <div
+            class="alert alert-<%- locals.error ? 'danger' : 'success' %>"
+            role="alert" style="padding: 1rem;"
+          >
+            <%= message %>
+            <div class="mt-3">
+              <a href="/sell" class="btn btn-link">View Listing</a>
+            </div>
           </div>
-        </div>
-      <% } %>
-        <div class="container-fluid" style="position: relative; top: 2rem; width: 40%; background-color: rgb(210, 210, 255); padding: 2rem;">
+        <% } %>
+      </div>
+    
+        <div class="container-fluid" style="position: relative; top: 1rem; width: 40%; background-color: rgb(210, 210, 255); padding: 2rem;">
             <form action="/sell/new" method="POST"> 
                 <div class="form-group row">
                     <label for="make" class="col-sm-2 col-form-label">Make:</label>
