@@ -4,59 +4,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Home</title>
     <style>
-       
-       body {
-            background-color: #71619b; /* Set background color for the entire page */
-            color: #fff; /* Set text color to white for better contrast */
-        }
+        /* Styles for the h1 heading */
         h1 {
             text-align: center;
             color: #FCC926; 
             text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
         }
-
+        /* Styles for the table */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
             background-color: rgb(210, 210, 255);;
         }
-
+        /* Styles for table cells (td) */
         td {
-            border: 1px solid #ddd;
+            border: 1px solid black;
             padding: 8px;
             text-align: left;
         }
-
+        /* Styles for table header cells (th) */
         th {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
             background-color: #f2f2f2;
             color: #FCC926; 
+            /* Text shadow for better visibility */
             text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
         }
-
+         /* Styles for forms */
         form {
             margin-top: 20px;
         }
-
+        /* Styles for elements with the 'hidden' class */
         .hidden {
             display: none;
         }
-
-
-
-      
     </style>
 </head>
 
-<body>
+<body style="background-color: #9191C2;">
+    <!-- Include header and menu partials -->
     <%- include ('../partials/header') %>
     <%- include ('../partials/menu') %>
+
     <main>
         <div class="container">
+            <!-- Welcome message with dynamic username -->
             <h1>Welcome Back <%= username %>!</h1>
+
+            <!-- Table to display user information -->
             <table>
                 <tr>
                     <th>Field</th>
@@ -69,11 +67,14 @@
                 <tr>
                     <td>Password:</td>
                     <td>
+                        <!-- Displaying password text and a button to change visibility -->
                         <span id="passwordText">***********</span>
-                        <button class="btn btn-primary" onclick="togglePasswordVisibility()">Change Password</button>
+                        <button class="btn btn-custom-wizard-purple" onclick="togglePasswordVisibility()" style="color: white;">Change Password</button>
                     </td>
                 </tr>
             </table>
+
+            <!-- Form to change password (initially hidden) -->
             <div id="changePasswordForm" class="hidden">
                 <h2>Change Password</h2>
                 <form action="/profile/changePassword" method="POST">
@@ -83,14 +84,18 @@
                     <button class="btn btn-primary" type="submit">Submit</button>
                 </form>
             </div>
+
+            <!-- Form to delete profile -->
             <form action="/profile/delete" method="POST">
                 <button class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete your profile?')">Delete Profile</button>
             </form>
         </div>
     </main>
 
+    <!-- Include footer partial -->
     <%- include ('../partials/footer') %>
 
+    <!-- JavaScript for toggling password visibility -->
     <script>
         function togglePasswordVisibility() {
             const passwordText = document.getElementById('passwordText');
