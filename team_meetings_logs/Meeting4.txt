@@ -1,0 +1,8 @@
+Summary:
+- Demo from main branch
+- Go over format of presentation 
+
+Roles:
+- Everyone: Contribute to the presentation slides
+- Host application 
+- Assign slides to each person
