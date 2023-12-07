@@ -1,106 +1,127 @@
 <!DOCTYPE html>
-<%- include ('../partials/header') %> 
+<%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
 
 
 <main class="container mt-5">
-   <h2 class="mb-4">Car Accessories</h2>
+  <h2 class="mb-4">Car Accessories</h2>
 
 
-   <div class="row">
-       <div class="col-md-4 mb-4">
-           <div class="card">
-               <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/alloywheels.jpeg?raw=true" class="card-img-top" alt="Alloy Wheels">
-               <div class="card-body">
-                   <h5 class="card-title">Alloy Wheels</h5>
-                   <p class="card-text">Enhance the look of your car with these alloy wheels.</p>
-                   <p class="card-text">Price: $150.</p>
-                   <a href="#" class="btn btn-primary">Add to Cart</a>
+  <div class="row">
+      <div class="col-md-4 mb-4">
+          <div class="card">
+              <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/alloywheels.jpeg?raw=true" class="card-img-top" alt="Alloy Wheels">
+              <div class="card-body">
+                  <h5 class="card-title">Alloy Wheels</h5>
+                  <p class="card-text">Enhance the look of your car with these alloy wheels.</p>
+                  <p class="card-text">Price: $150</p>
+               
+                  <!-- <form action="/add-accessory-to-cart" method="POST">
+                      <input type="hidden" name="accessory_id" value="1">
+                      <input type="hidden" name="name" value="Alloy Wheels">
+                      <input type="hidden" name="price" value="150">
+                      <button type="submit" class="btn btn-primary">Add to Cart</button>
+                  </form> -->
+              </div>
+          </div>
+      </div>
+
+
+      <div class="col-md-4 mb-4">
+          <div class="card">
+              <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/roofRack.jpeg?raw=true" class="card-img-top" alt="Roof Rack">
+              <div class="card-body">
+                  <h5 class="card-title">Roof Rack</h5>
+                  <p class="card-text">Add extra cargo space to your car with a durable roof rack.</p>
+                  <p class="card-text">Price: $120</p>
+           
+                  <!-- <form action="/add-accessory-to-cart" method="POST">
+                      <input type="hidden" name="accessory_id" value="2">
+                      <input type="hidden" name="name" value="Roof Rack">
+                      <input type="hidden" name="price" value="120">
+                      <button type="submit" class="btn btn-primary">Add to Cart</button>
+                  </form> -->
+              </div>
+          </div>
+      </div>
+
+
+      <div class="col-md-4 mb-4">
+          <div class="card">
+              <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/ledHeadlights.jpeg?raw=true" class="card-img-top" alt="LED Headlights">
+              <div class="card-body">
+                  <h5 class="card-title">LED Headlights</h5>
+                  <p class="card-text">Upgrade your car headlights for improved visibility.</p>
+                  <p class="card-text">Price: $80</p>
+         
+                  <!-- <form action="/add-accessory-to-cart" method="POST">
+                      <input type="hidden" name="accessory_id" value="3">
+                      <input type="hidden" name="name" value="LED Headlights">
+                      <input type="hidden" name="price" value="80">
+                      <button type="submit" class="btn btn-primary">Add to Cart</button>
+                  </form> -->
+              </div>
+          </div>
+      </div>
+  </div>
+
+
+  <div class="row">
+      <div class="col-md-4 mb-4">
+          <div class="card">
+              <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/carCover.jpeg?raw=true" class="card-img-top" alt="Car Cover">
+              <div class="card-body">
+                  <h5 class="card-title">Car Cover</h5>
+                  <p class="card-text">Protect your car from the elements with a high-quality car cover.</p>
+                  <p class="card-text">Price: $50</p>
+             
+                  <!-- <form action="/add-accessory-to-cart" method="POST">
+                      <input type="hidden" name="accessory_id" value="4">
+                      <input type="hidden" name="name" value="Car Cover">
+                      <input type="hidden" name="price" value="50">
+                      <button type="submit" class="btn btn-primary">Add to Cart</button>
+                  </form> -->
+              </div>
+          </div>
+      </div>
+
+
+      <div class="col-md-4 mb-4">
+          <div class="card">
+              <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/seatCover.png?raw=true" class="card-img-top" alt="Seat Covers">
+              <div class="card-body">
+                  <h5 class="card-title">Seat Cover</h5>
+                  <p class="card-text">Add protection to your car seats with these seat covers.</p>
+                  <p class="card-text">Price: $30</p>
+<!--            
+                  <form action="/add-accessory-to-cart" method="POST">
+                      <input type="hidden" name="accessory_id" value="5">
+                      <input type="hidden" name="name" value="Seat Cover">
+                      <input type="hidden" name="price" value="30">
+                      <button type="submit" class="btn btn-primary">Add to Cart</button>
+                  </form> -->
+              </div>
+          </div>
+      </div>
+
+
+      <div class="col-md-4 mb-4">
+          <div class="card">
+              <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/dashboardCam.png?raw=true" class="card-img-top" alt="Dash Cam">
+              <div class="card-body">
+                  <h5 class="card-title">Dashboard Camera</h5>
+                  <p class="card-text">Capture every moment on the road with a reliable dashboard camera.</p>
+                  <p class="card-text">Price: $100</p>
+               
+                  <!-- <form action="/add-accessory-to-cart" method="POST">
+                      <input type="hidden" name="accessory_id" value="6">
+                      <input type="hidden" name="name" value="Dashboard Camera">
+                      <input type="hidden" name="price" value="100">
+                      <button type="submit" class="btn btn-primary">Add to Cart</button>
+                   </form> -->
                </div>
            </div>
        </div>
-
-
-  
-       <div class="row">
-           <div class="col-md-4 mb-4">
-               <div class="card">
-                   <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/roofRack.jpeg?raw=true" class="card-img-top" alt="Roof Rack">
-                   <div class="card-body">
-                       <h5 class="card-title">Roof Rack</h5>
-                       <p class="card-text">Add extra cargo space to your car with a durable roof rack.</p>
-                       <p class="card-text">Price: $120</p>
-                       <a href="#" class="btn btn-primary">Add to Cart</a>
-                   </div>
-               </div>
-           </div>
-
-
-
-
-      
-   <div class="row">
-       <div class="col-md-4 mb-4">
-           <div class="card">
-               <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/ledHeadlights.jpeg?raw=true" class="card-img-top" alt="LED Headlights">
-               <div class="card-body">
-                   <h5 class="card-title">LED Headlights</h5>
-                   <p class="card-text">Upgrade your car headlights for improved visibility.</p>
-                   <p class="card-text">Price: $80.</p>
-                   <a href="#" class="btn btn-primary">Add to Cart</a>
-               </div>
-           </div>
-       </div>
-
-
-  
-       <div class="row">
-           <div class="col-md-4 mb-4">
-               <div class="card">
-                   <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/carCover.jpeg?raw=true" class="card-img-top" alt="Car Cover">
-                   <div class="card-body">
-                       <h5 class="card-title">Car Cover</h5>
-                       <p class="card-text">Protect your car from the elements with a high-quality car cover.</p>
-                       <p class="card-text">Price: $50</p>
-                       <a href="#" class="btn btn-primary">Add to Cart</a>
-                   </div>
-               </div>
-           </div>
-
-
-
-
-
-
-   <div class="row">
-       <div class="col-md-4 mb-4">
-           <div class="card">
-               <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/seatCover.png?raw=true" class="card-img-top" alt="Seat Covers">
-               <div class="card-body">
-                   <h5 class="card-title">Seat Cover</h5>
-                   <p class="card-text">Add protection to your car seats with these seat covers.</p>
-                   <p class="card-text">Price: $30</p>
-                   <a href="#" class="btn btn-primary">Add to Cart</a>
-               </div>
-           </div>
-       </div>
-
-
-
-
-
-
-   <div class="row">
-       <div class="col-md-4 mb-4">
-           <div class="card">
-               <img src="https://github.com/stichmc/wheel-wizard/blob/ananyatandel-branch-2/src/resources/img/dashboardCam.png?raw=true" class="card-img-top" alt="Dash Cam">
-               <div class="card-body">
-                   <h5 class="card-title">Dashboard Camera</h5>
-                   <p class="card-text">Capture every moment on the road with a reliable dashboard camera.</p>
-                   <p class="card-text">Price: $100</p>
-                   <a href="#" class="btn btn-primary">Add to Cart</a>
-               </div>
-           </div>
-
-
+   </div>
+</main>
 <%- include ('../partials/footer') %>
