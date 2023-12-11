@@ -13,8 +13,14 @@ Michael Stich, Michael Gisecke, Cobhan Kale, Ananya Tandel, Brock Hoos
     - EJS & CSS
     - Javascript
     - Node.js
+    - Cars API
 
-### Prerequisites to run the application - Any software that needs to be installed to run the application
+#### Supporting Technology
+    - Github 
+    - Docker Containers
+    - Azure Ubuntu VM
+
+### Prerequisites to run the application locally
     - Docker Desktop
 
 ### Instructions on how to run the application locally

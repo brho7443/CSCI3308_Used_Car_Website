@@ -91,20 +91,6 @@ app.get('/login', (req, res) => {
   res.render('pages/login');
 });
 
-// app.get('/login/invalid_request', (req, res) => {
-//   res.render('pages/login',{
-//     error: true,
-//     message: `You must be signed in to view listings`,
-//   });
-// });
-
-// app.get('/login/failed', (req, res) => {
-//   res.render('pages/login',{
-//     error: true,
-//     message: `Incorrect username or password`,
-//   });
-// });
-
 app.post('/login', async (req, res) => {
   const username = req.body.username;
   const hash = await bcrypt
@@ -325,7 +311,7 @@ axios({
       await db.query(insertCarQuery, [make, model, color, price, miles, car_description])
       .catch(err =>{
         console.log(err);
-        res.redirect(400,'/register');
+        res.redirect(400,'/register'); 
       });
     });
 
